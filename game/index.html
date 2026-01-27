@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISLAND ESCAPE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a2e;
+            color: #eee;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #e94560;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+        }
+
+        .game-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        /* BIG TIME DISPLAY */
+        .time-display {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .time-big {
+            font-size: 64px;
+            color: #00ff88;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .time-big.warning {
+            color: #f4d35e;
+        }
+
+        .time-big.danger {
+            color: #e94560;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .time-label {
+            color: #888;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* MAP */
+        .map-container {
+            position: relative;
+        }
+
+        .map {
+            display: grid;
+            grid-template-columns: repeat(10, 50px);
+            grid-template-rows: repeat(10, 50px);
+            gap: 2px;
+            background: #16213e;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .tile {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .tile:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .tile.water { background: #0f4c75; }
+        .tile.beach { background: #f4d35e; }
+        .tile.forest { background: #2d6a4f; }
+        .tile.ruins { background: #6c567b; }
+        .tile.rocks { background: #5c636a; }
+
+        /* RESOURCE ICONS ON MAP */
+        .tile-icon {
+            font-size: 22px;
+            filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5));
+        }
+
+        .tile.player .tile-icon {
+            display: none;
+        }
+
+        .tile.player::after {
+            content: '';
+            width: 30px;
+            height: 30px;
+            background: #e94560;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #e94560, 0 0 30px #e94560;
+            animation: playerGlow 2s infinite;
+        }
+
+        @keyframes playerGlow {
+            0%, 100% { box-shadow: 0 0 15px #e94560, 0 0 30px #e94560; }
+            50% { box-shadow: 0 0 20px #e94560, 0 0 40px #e94560; }
+        }
+
+        .tile.explored {
+            opacity: 1;
+        }
+
+        .tile.unexplored {
+            opacity: 0.3;
+        }
+
+        .tile.unexplored .tile-icon {
+            display: none;
+        }
+
+        /* REACHABLE TILES WITH COST */
+        .tile.reachable {
+            box-shadow: inset 0 0 0 3px #00ff88;
+            cursor: pointer;
+        }
+
+        .tile.reachable::before {
+            content: attr(data-cost);
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 11px;
+            color: #00ff88;
+            font-weight: bold;
+            background: rgba(0,0,0,0.7);
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        .tile.reachable:hover {
+            box-shadow: inset 0 0 0 3px #fff;
+        }
+
+        /* TOOLTIP */
+        .tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2e;
+            border: 2px solid #e94560;
+            padding: 8px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            z-index: 100;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .tile:hover .tooltip {
+            display: block;
+        }
+
+        .tooltip-title {
+            color: #f4d35e;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .tooltip-resources {
+            color: #00ff88;
+        }
+
+        .tooltip-cost {
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* PANEL */
+        .panel {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 300px;
+        }
+
+        .panel h2 {
+            color: #e94560;
+            margin-bottom: 15px;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px 12px;
+            background: #1a1a2e;
+            border-radius: 4px;
+        }
+
+        .stat-label {
+            color: #888;
+        }
+
+        .stat-value {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .stat-value.warning {
+            color: #f4d35e;
+        }
+
+        .stat-value.danger {
+            color: #e94560;
+        }
+
+        /* PROGRESS BAR */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #1a1a2e;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .progress-fill.hp {
+            background: linear-gradient(90deg, #e94560, #00ff88);
+        }
+
+        .progress-fill.hunger {
+            background: linear-gradient(90deg, #e94560, #f4d35e);
+        }
+
+        /* ACTIONS */
+        .actions {
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #0f4c75;
+            border: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            background: #e94560;
+            transform: translateY(-2px);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .action-cost {
+            background: rgba(0,0,0,0.3);
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            color: #f4d35e;
+        }
+
+        /* LOG */
+        .log {
+            margin-top: 20px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            background: #1a1a2e;
+            border-radius: 4px;
+            font-size: 12px;
+            border-left: 3px solid #0f4c75;
+        }
+
+        .log-entry.event {
+            border-left-color: #e94560;
+        }
+
+        .log-entry.success {
+            border-left-color: #00ff88;
+        }
+
+        /* INVENTORY */
+        .inventory {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .inv-item {
+            background: #1a1a2e;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .inv-item .icon {
+            font-size: 16px;
+        }
+
+        .inv-item span {
+            color: #00ff88;
+        }
+
+        /* ZONE INFO */
+        .zone-info {
+            margin-top: 15px;
+            padding: 12px;
+            background: #1a1a2e;
+            border-radius: 4px;
+            border-left: 3px solid #f4d35e;
+        }
+
+        .zone-name {
+            color: #f4d35e;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .zone-resources {
+            color: #00ff88;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .zone-resources .resource-tag {
+            display: inline-block;
+            background: rgba(0,255,136,0.1);
+            padding: 3px 8px;
+            border-radius: 3px;
+            margin-right: 5px;
+            margin-top: 4px;
+        }
+
+        /* NIGHT OVERLAY */
+        .night-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .night-overlay.active {
+            display: flex;
+        }
+
+        .night-overlay h2 {
+            color: #e94560;
+            font-size: 72px;
+            margin-bottom: 20px;
+            letter-spacing: 10px;
+        }
+
+        .night-overlay p {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .night-overlay button {
+            padding: 15px 40px;
+            font-size: 18px;
+        }
+
+        /* LEGEND */
+        .legend {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+
+        /* CONTROLS HINT */
+        .controls-hint {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: #16213e;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #888;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .key {
+            background: #0f4c75;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 11px;
+            margin-right: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>ISLAND ESCAPE</h1>
+    <p style="color: #888; margin-bottom: 10px;">построй плот — сбеги с острова</p>
+
+    <div class="game-container">
+        <div class="map-container">
+            <div class="map" id="map"></div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-color" style="background:#f4d35e"></div> пляж</div>
+                <div class="legend-item"><div class="legend-color" style="background:#2d6a4f"></div> лес</div>
+                <div class="legend-item"><div class="legend-color" style="background:#6c567b"></div> руины</div>
+                <div class="legend-item"><div class="legend-color" style="background:#5c636a"></div> скалы</div>
+            </div>
+            <div class="controls-hint">
+                <span class="key">WASD</span> движение
+                <span class="key">SPACE</span> собирать
+                <span class="key">C</span> крафт
+                <span class="key">R</span> разведка
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>// ДЕНЬ <span id="day-num">1</span></h2>
+            
+            <div class="time-display">
+                <div class="time-big" id="time-big">12</div>
+                <div class="time-label">часов осталось</div>
+            </div>
+
+            <div class="stat">
+                <span class="stat-label">HP</span>
+                <span class="stat-value" id="hp">100</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill hp" id="hp-bar" style="width:100%"></div></div>
+
+            <div class="stat" style="margin-top: 10px;">
+                <span class="stat-label">голод</span>
+                <span class="stat-value" id="hunger">100</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill hunger" id="hunger-bar" style="width:100%"></div></div>
+
+            <div class="zone-info">
+                <div class="zone-name" id="zone-name">пляж</div>
+                <div class="zone-resources" id="zone-resources"></div>
+            </div>
+
+            <h2 style="margin-top: 20px;">// ИНВЕНТАРЬ</h2>
+            <div class="inventory" id="inventory">
+                <div class="inv-item" style="color: #888;">пусто</div>
+            </div>
+
+            <div class="actions">
+                <h2>// ДЕЙСТВИЯ</h2>
+                <button class="action-btn" id="btn-explore" onclick="explore()">
+                    <span>разведка местности</span>
+                    <span class="action-cost">3ч</span>
+                </button>
+                <button class="action-btn" id="btn-gather" onclick="gather()">
+                    <span>собирать ресурсы</span>
+                    <span class="action-cost">1ч</span>
+                </button>
+                <button class="action-btn" id="btn-craft" onclick="openCraft()">
+                    <span>крафт</span>
+                    <span class="action-cost">2-4ч</span>
+                </button>
+                <button class="action-btn" id="btn-rest" onclick="endDay()">
+                    <span>завершить день</span>
+                    <span class="action-cost">сон</span>
+                </button>
+            </div>
+
+            <div class="log" id="log"></div>
+        </div>
+    </div>
+
+    <div class="night-overlay" id="night-overlay">
+        <h2>НОЧЬ</h2>
+        <p id="night-events">что-то движется в темноте...</p>
+        <button class="action-btn" onclick="startNewDay()">дождаться рассвета</button>
+    </div>
+
+    <script>
+        // === GAME STATE ===
+        const state = {
+            day: 1,
+            time: 12,
+            maxTime: 12,
+            hp: 100,
+            hunger: 100,
+            
+            playerX: 5,
+            playerY: 8,
+            
+            inventory: {},
+            
+            explored: new Set(['5,8', '4,8', '6,8', '5,7']), // стартовая зона
+            
+            craftedItems: new Set(),
+            
+            // ресурсы на карте (x,y -> ресурс)
+            mapResources: {},
+        };
+
+        // === RESOURCE ICONS ===
+        const RESOURCE_ICONS = {
+            'волокна': '🌿',
+            'дерево': '🌲',
+            'брёвна': '🪵',
+            'камень': '🪨',
+            'ткань': '🧵',
+            'парус': '⛵',
+            'каменный топор': '🪓',
+            'верёвка': '🪢',
+            'плот': '🚣',
+            'еда': '🍖',
+        };
+
+        // === MAP CONFIG ===
+        const ZONES = {
+            water: { name: 'вода', icon: '🌊', walkable: false, resources: [] },
+            beach: { name: 'пляж', icon: '🏖️', walkable: true, moveCost: 1, resources: ['волокна'] },
+            forest: { name: 'лес', icon: '🌲', walkable: true, moveCost: 2, resources: ['дерево', 'волокна'] },
+            ruins: { name: 'руины', icon: '🏚️', walkable: true, moveCost: 2, resources: ['ткань', 'камень'] },
+            rocks: { name: 'скалы', icon: '🪨', walkable: true, moveCost: 3, resources: ['камень'] },
+        };
+
+        // карта 10x10
+        const MAP = [
+            ['water','water','water','water','water','water','water','water','water','water'],
+            ['water','water','water','rocks','rocks','rocks','water','water','water','water'],
+            ['water','water','rocks','rocks','forest','forest','rocks','water','water','water'],
+            ['water','rocks','forest','forest','forest','forest','forest','ruins','water','water'],
+            ['water','water','forest','forest','forest','forest','ruins','ruins','water','water'],
+            ['water','water','forest','forest','forest','forest','forest','water','water','water'],
+            ['water','beach','beach','forest','forest','forest','beach','beach','water','water'],
+            ['water','beach','beach','beach','beach','beach','beach','beach','water','water'],
+            ['water','water','beach','beach','beach','beach','beach','water','water','water'],
+            ['water','water','water','water','water','water','water','water','water','water'],
+        ];
+
+        // === CRAFTING ===
+        const RECIPES = {
+            'каменный топор': {
+                ingredients: { 'камень': 2, 'волокна': 3 },
+                time: 2,
+                icon: '🪓',
+            },
+            'верёвка': {
+                ingredients: { 'волокна': 3 },
+                time: 2,
+                icon: '🪢',
+            },
+            'плот': {
+                ingredients: { 'брёвна': 4, 'верёвка': 2, 'парус': 1 },
+                time: 4,
+                icon: '🚣',
+            }
+        };
+
+        // === INIT ===
+        function init() {
+            generateMapResources();
+            renderMap();
+            updateUI();
+            log('ты очнулся на пляже. надо выбираться.');
+            log('цель: построить плот и уплыть.', 'event');
+        }
+
+        // генерируем ресурсы на карте
+        function generateMapResources() {
+            for (let y = 0; y < 10; y++) {
+                for (let x = 0; x < 10; x++) {
+                    const terrain = MAP[y][x];
+                    const zone = ZONES[terrain];
+                    if (zone.resources.length > 0) {
+                        // случайный ресурс из доступных в зоне
+                        const resource = zone.resources[Math.floor(Math.random() * zone.resources.length)];
+                        state.mapResources[`${x},${y}`] = resource;
+                    }
+                }
+            }
+            // гарантируем парус в руинах
+            state.mapResources['7,3'] = 'ткань';
+            state.mapResources['6,4'] = 'парус';
+        }
+
+        // === RENDER MAP ===
+        function renderMap() {
+            const mapEl = document.getElementById('map');
+            mapEl.innerHTML = '';
+            
+            for (let y = 0; y < 10; y++) {
+                for (let x = 0; x < 10; x++) {
+                    const tile = document.createElement('div');
+                    const terrain = MAP[y][x];
+                    const zone = ZONES[terrain];
+                    const key = `${x},${y}`;
+                    
+                    tile.className = `tile ${terrain}`;
+                    
+                    // explored?
+                    const isExplored = state.explored.has(key);
+                    if (isExplored) {
+                        tile.classList.add('explored');
+                    } else {
+                        tile.classList.add('unexplored');
+                    }
+                    
+                    // resource icon
+                    const resource = state.mapResources[key];
+                    if (resource && isExplored) {
+                        const icon = document.createElement('span');
+                        icon.className = 'tile-icon';
+                        icon.textContent = RESOURCE_ICONS[resource] || '?';
+                        tile.appendChild(icon);
+                    }
+                    
+                    // player?
+                    if (x === state.playerX && y === state.playerY) {
+                        tile.classList.add('player');
+                    }
+                    
+                    // reachable?
+                    const isReachable = zone.walkable && canReach(x, y);
+                    if (isReachable) {
+                        tile.classList.add('reachable');
+                        tile.setAttribute('data-cost', zone.moveCost + 'ч');
+                        tile.onclick = () => moveTo(x, y);
+                    }
+                    
+                    // tooltip
+                    if (zone.walkable && isExplored) {
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'tooltip';
+                        tooltip.innerHTML = `
+                            <div class="tooltip-title">${zone.icon} ${zone.name}</div>
+                            ${resource ? `<div class="tooltip-resources">${RESOURCE_ICONS[resource]} ${resource}</div>` : ''}
+                            ${isReachable ? `<div class="tooltip-cost">переход: ${zone.moveCost}ч</div>` : ''}
+                        `;
+                        tile.appendChild(tooltip);
+                    }
+                    
+                    mapEl.appendChild(tile);
+                }
+            }
+        }
+
+        // === MOVEMENT ===
+        function canReach(x, y) {
+            const dx = Math.abs(x - state.playerX);
+            const dy = Math.abs(y - state.playerY);
+            return (dx <= 1 && dy <= 1) && !(dx === 0 && dy === 0);
+        }
+
+        function moveTo(x, y) {
+            const terrain = MAP[y][x];
+            const zone = ZONES[terrain];
+            
+            if (!zone.walkable) return;
+            
+            const cost = zone.moveCost;
+            if (state.time < cost) {
+                log('не хватает времени!', 'event');
+                return;
+            }
+            
+            state.time -= cost;
+            state.playerX = x;
+            state.playerY = y;
+            
+            const key = `${x},${y}`;
+            const wasExplored = state.explored.has(key);
+            state.explored.add(key);
+            
+            log(`перешёл в: ${zone.name} (-${cost}ч)`);
+            
+            if (!wasExplored) {
+                log('новая территория исследована', 'success');
+            }
+            
+            updateUI();
+            renderMap();
+            
+            if (state.time <= 0) {
+                endDay();
+            }
+        }
+
+        // === ACTIONS ===
+        function explore() {
+            if (state.time < 3) {
+                log('не хватает времени!', 'event');
+                return;
+            }
+            
+            state.time -= 3;
+            
+            // открываем соседние клетки
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    const nx = state.playerX + dx;
+                    const ny = state.playerY + dy;
+                    if (nx >= 0 && nx < 10 && ny >= 0 && ny < 10) {
+                        state.explored.add(`${nx},${ny}`);
+                    }
+                }
+            }
+            
+            log('осмотрел окрестности (-3ч)', 'success');
+            updateUI();
+            renderMap();
+        }
+
+        function gather() {
+            if (state.time < 1) {
+                log('не хватает времени!', 'event');
+                return;
+            }
+            
+            const key = `${state.playerX},${state.playerY}`;
+            const resource = state.mapResources[key];
+            
+            if (!resource) {
+                log('тут нечего собирать', 'event');
+                return;
+            }
+            
+            // для дерева нужен топор
+            if (resource === 'дерево' && !state.craftedItems.has('каменный топор')) {
+                log('нужен топор чтобы рубить деревья!', 'event');
+                return;
+            }
+            
+            state.time -= 1;
+            
+            if (resource === 'дерево') {
+                addItem('брёвна', 1);
+                log(`🪵 срубил дерево, получил брёвна (-1ч)`, 'success');
+            } else if (resource === 'парус') {
+                addItem('парус', 1);
+                log(`⛵ нашёл парус! (-1ч)`, 'success');
+            } else {
+                const icon = RESOURCE_ICONS[resource] || '';
+                addItem(resource, 1);
+                log(`${icon} собрал ${resource} (-1ч)`, 'success');
+            }
+            
+            // ресурс собран — новый случайный или пусто
+            const terrain = MAP[state.playerY][state.playerX];
+            const zone = ZONES[terrain];
+            if (zone.resources.length > 0 && Math.random() > 0.3) {
+                // 70% шанс что появится новый ресурс
+                state.mapResources[key] = zone.resources[Math.floor(Math.random() * zone.resources.length)];
+            } else {
+                delete state.mapResources[key];
+            }
+            
+            updateUI();
+            renderMap();
+        }
+
+        function addItem(name, count) {
+            state.inventory[name] = (state.inventory[name] || 0) + count;
+        }
+
+        function openCraft() {
+            const options = Object.keys(RECIPES);
+            
+            let msg = 'ЧТО КРАФТИТЬ?\n\n';
+            options.forEach((name, i) => {
+                const recipe = RECIPES[name];
+                const icon = recipe.icon || '?';
+                
+                // проверяем ингредиенты
+                const ingredients = Object.entries(recipe.ingredients).map(([item, count]) => {
+                    const have = state.inventory[item] || 0;
+                    const itemIcon = RESOURCE_ICONS[item] || '';
+                    const status = have >= count ? '✓' : '✗';
+                    return `${itemIcon}${item} ${have}/${count} ${status}`;
+                });
+                
+                // можем ли скрафтить?
+                const canCraft = Object.entries(recipe.ingredients).every(
+                    ([item, count]) => (state.inventory[item] || 0) >= count
+                );
+                const hasTime = state.time >= recipe.time;
+                
+                let status = '';
+                if (!canCraft) status = ' [не хватает ресурсов]';
+                else if (!hasTime) status = ' [не хватает времени]';
+                else status = ' [МОЖНО]';
+                
+                msg += `${i + 1}. ${icon} ${name} (${recipe.time}ч)${status}\n`;
+                msg += `   ${ingredients.join(', ')}\n\n`;
+            });
+            
+            msg += '\nВведи номер (1-' + options.length + '):';
+            
+            const choice = prompt(msg);
+            if (!choice) return;
+            
+            const idx = parseInt(choice) - 1;
+            if (idx < 0 || idx >= options.length) return;
+            
+            craft(options[idx]);
+        }
+
+        function craft(itemName) {
+            const recipe = RECIPES[itemName];
+            if (!recipe) return;
+            
+            // проверка ингредиентов
+            for (const [item, count] of Object.entries(recipe.ingredients)) {
+                if ((state.inventory[item] || 0) < count) {
+                    log(`не хватает: ${item}`, 'event');
+                    return;
+                }
+            }
+            
+            // проверка времени
+            if (state.time < recipe.time) {
+                log('не хватает времени!', 'event');
+                return;
+            }
+            
+            // тратим ингредиенты
+            for (const [item, count] of Object.entries(recipe.ingredients)) {
+                state.inventory[item] -= count;
+                if (state.inventory[item] <= 0) {
+                    delete state.inventory[item];
+                }
+            }
+            
+            // тратим время
+            state.time -= recipe.time;
+            
+            // получаем предмет
+            state.craftedItems.add(itemName);
+            addItem(itemName, 1);
+            
+            log(`скрафтил: ${itemName} (-${recipe.time}ч)`, 'success');
+            
+            // WIN CONDITION
+            if (itemName === 'плот') {
+                setTimeout(() => {
+                    alert('ТЫ ПОСТРОИЛ ПЛОТ И СБЕЖАЛ С ОСТРОВА!\n\nПОБЕДА!');
+                    location.reload();
+                }, 500);
+            }
+            
+            updateUI();
+        }
+
+        // === DAY/NIGHT ===
+        function endDay() {
+            document.getElementById('night-overlay').classList.add('active');
+            
+            // ночные события
+            const events = [];
+            
+            // голод
+            state.hunger -= 20;
+            if (state.hunger <= 0) {
+                state.hunger = 0;
+                state.hp -= 20;
+                events.push('ты голодаешь. -20 HP');
+            }
+            
+            // случайные события
+            if (Math.random() < 0.3) {
+                events.push('что-то шуршало в темноте...');
+            }
+            
+            document.getElementById('night-events').textContent = 
+                events.length > 0 ? events.join('\n') : 'ночь прошла спокойно.';
+        }
+
+        function startNewDay() {
+            document.getElementById('night-overlay').classList.remove('active');
+            
+            state.day++;
+            state.time = state.maxTime;
+            
+            log(`=== ДЕНЬ ${state.day} ===`, 'event');
+            
+            if (state.hp <= 0) {
+                alert('ТЫ УМЕР\n\nИгра окончена.');
+                location.reload();
+                return;
+            }
+            
+            updateUI();
+            renderMap();
+        }
+
+        // === UI ===
+        function updateUI() {
+            document.getElementById('day-num').textContent = state.day;
+            
+            // big time display
+            const timeBig = document.getElementById('time-big');
+            timeBig.textContent = state.time;
+            timeBig.className = 'time-big' + 
+                (state.time <= 2 ? ' danger' : state.time <= 4 ? ' warning' : '');
+            
+            // HP
+            const hpEl = document.getElementById('hp');
+            hpEl.textContent = state.hp;
+            hpEl.className = 'stat-value' + (state.hp < 30 ? ' danger' : state.hp < 60 ? ' warning' : '');
+            document.getElementById('hp-bar').style.width = state.hp + '%';
+            
+            // Hunger
+            const hungerEl = document.getElementById('hunger');
+            hungerEl.textContent = state.hunger;
+            hungerEl.className = 'stat-value' + (state.hunger < 30 ? ' danger' : state.hunger < 60 ? ' warning' : '');
+            document.getElementById('hunger-bar').style.width = state.hunger + '%';
+            
+            // zone info
+            const terrain = MAP[state.playerY][state.playerX];
+            const zone = ZONES[terrain];
+            const currentResource = state.mapResources[`${state.playerX},${state.playerY}`];
+            
+            document.getElementById('zone-name').innerHTML = `${zone.icon} ${zone.name}`;
+            
+            const zoneResourcesEl = document.getElementById('zone-resources');
+            if (currentResource) {
+                const icon = RESOURCE_ICONS[currentResource] || '?';
+                zoneResourcesEl.innerHTML = `
+                    здесь можно собрать:
+                    <span class="resource-tag">${icon} ${currentResource}</span>
+                    <span style="color:#888">(1ч)</span>
+                `;
+            } else {
+                zoneResourcesEl.innerHTML = '<span style="color:#888">ресурсов нет</span>';
+            }
+            
+            // inventory
+            const invEl = document.getElementById('inventory');
+            const items = Object.entries(state.inventory);
+            if (items.length === 0) {
+                invEl.innerHTML = '<div class="inv-item" style="color: #888;">пусто</div>';
+            } else {
+                invEl.innerHTML = items
+                    .map(([name, count]) => {
+                        const icon = RESOURCE_ICONS[name] || '?';
+                        return `<div class="inv-item"><span class="icon">${icon}</span>${name} <span>x${count}</span></div>`;
+                    })
+                    .join('');
+            }
+            
+            // buttons
+            document.getElementById('btn-explore').disabled = state.time < 3;
+            document.getElementById('btn-gather').disabled = state.time < 1;
+        }
+
+        function log(msg, type = '') {
+            const logEl = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry ' + type;
+            entry.textContent = msg;
+            logEl.insertBefore(entry, logEl.firstChild);
+            
+            // keep only last 20 entries
+            while (logEl.children.length > 20) {
+                logEl.removeChild(logEl.lastChild);
+            }
+        }
+
+        // === KEYBOARD CONTROLS ===
+        document.addEventListener('keydown', (e) => {
+            // не обрабатываем если ночь
+            if (document.getElementById('night-overlay').classList.contains('active')) {
+                if (e.key === ' ' || e.key === 'Enter') {
+                    startNewDay();
+                }
+                return;
+            }
+            
+            let dx = 0, dy = 0;
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                case 'ц':
+                case 'Ц':
+                    dy = -1;
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                case 'ы':
+                case 'Ы':
+                    dy = 1;
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                case 'ф':
+                case 'Ф':
+                    dx = -1;
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                case 'в':
+                case 'В':
+                    dx = 1;
+                    break;
+                case ' ': // пробел — собирать
+                case 'e':
+                case 'E':
+                case 'у':
+                case 'У':
+                    e.preventDefault();
+                    gather();
+                    return;
+                case 'c':
+                case 'C':
+                case 'с':
+                case 'С':
+                    openCraft();
+                    return;
+                case 'r':
+                case 'R':
+                case 'к':
+                case 'К':
+                    explore();
+                    return;
+            }
+            
+            if (dx !== 0 || dy !== 0) {
+                e.preventDefault();
+                const newX = state.playerX + dx;
+                const newY = state.playerY + dy;
+                
+                // проверяем границы
+                if (newX >= 0 && newX < 10 && newY >= 0 && newY < 10) {
+                    const terrain = MAP[newY][newX];
+                    const zone = ZONES[terrain];
+                    if (zone.walkable) {
+                        moveTo(newX, newY);
+                    }
+                }
+            }
+        });
+
+        // === START ===
+        init();
+        
+        // подсказка
+        log('управление: стрелки/WASD — движение', 'event');
+        log('ПРОБЕЛ/E — собирать, C — крафт, R — разведка', 'event');
+    </script>
+</body>
+</html>
