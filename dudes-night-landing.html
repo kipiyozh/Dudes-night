@@ -1,0 +1,1531 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>dude’s night — transcript landing</title>
+    <style>
+      :root{
+        --bg: #f6f7fb;
+        --panel: #ffffff;
+        --text: #0b1020;
+        --muted: #576074;
+        --border: rgba(15, 23, 42, .10);
+        --shadow: 0 16px 50px rgba(2, 6, 23, .10);
+        --shadow-soft: 0 10px 30px rgba(2, 6, 23, .08);
+        --accent: #6d28d9;
+        --accent2: #0ea5e9;
+        --ring: rgba(109, 40, 217, .18);
+        --code: rgba(2, 6, 23, .06);
+      }
+      :root[data-theme="dark"]{
+          --bg: #0b0d12;
+          --panel: #101522;
+          --text: #e9edf7;
+          --muted: #a9b2c5;
+          --border: rgba(148, 163, 184, .14);
+          --shadow: 0 18px 60px rgba(0,0,0,.45);
+          --shadow-soft: 0 12px 34px rgba(0,0,0,.32);
+          --ring: rgba(14, 165, 233, .16);
+          --code: rgba(226, 232, 240, .08);
+      }
+      :root[data-theme="light"]{
+        --bg: #f6f7fb;
+        --panel: #ffffff;
+        --text: #0b1020;
+        --muted: #576074;
+        --border: rgba(15, 23, 42, .10);
+        --shadow: 0 16px 50px rgba(2, 6, 23, .10);
+        --shadow-soft: 0 10px 30px rgba(2, 6, 23, .08);
+        --accent: #6d28d9;
+        --accent2: #0ea5e9;
+        --ring: rgba(109, 40, 217, .18);
+        --code: rgba(2, 6, 23, .06);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme]){
+          --bg: #0b0d12;
+          --panel: #101522;
+          --text: #e9edf7;
+          --muted: #a9b2c5;
+          --border: rgba(148, 163, 184, .14);
+          --shadow: 0 18px 60px rgba(0,0,0,.45);
+          --shadow-soft: 0 12px 34px rgba(0,0,0,.32);
+          --ring: rgba(14, 165, 233, .16);
+          --code: rgba(226, 232, 240, .08);
+        }
+      }
+      *{ box-sizing:border-box; }
+      html,body{ height:100%; }
+      body{
+        margin:0;
+        background:
+          radial-gradient(1100px 600px at 20% -10%, rgba(109,40,217,.18), transparent 55%),
+          radial-gradient(900px 520px at 100% 0%, rgba(14,165,233,.16), transparent 52%),
+          radial-gradient(900px 620px at 10% 100%, rgba(14,165,233,.10), transparent 55%),
+          var(--bg);
+        color:var(--text);
+        font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+        letter-spacing: .2px;
+      }
+      a{ color:inherit; text-decoration:none; }
+      a:hover{ text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:3px; }
+      .wrap{ max-width: 1040px; margin: 0 auto; padding: 44px 20px 72px; }
+
+      /* reading progress */
+      .read-progress{
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        z-index: 50;
+        background: transparent;
+        pointer-events: none;
+      }
+      .read-progress > i{
+        display:block;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        box-shadow: 0 6px 18px rgba(109,40,217,.22);
+      }
+      .topbar{
+        display:flex; align-items:center; justify-content:space-between;
+        gap:14px; padding: 12px 14px;
+        border:1px solid var(--border);
+        border-radius: 16px;
+        background: color-mix(in oklab, var(--panel) 92%, transparent);
+        box-shadow: var(--shadow-soft);
+        backdrop-filter: blur(10px);
+      }
+      .brand{
+        display:flex; align-items:center; gap:12px;
+        min-width: 0;
+      }
+      .mark{
+        width:34px; height:34px; border-radius: 11px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        box-shadow: 0 10px 24px rgba(109,40,217,.24);
+        flex: 0 0 auto;
+      }
+      @media (prefers-reduced-motion: no-preference){
+        .mark{ animation: floaty 3.8s ease-in-out infinite; }
+        .headline:before{ animation: drift 12s ease-in-out infinite; }
+      }
+      @keyframes floaty{
+        0%,100%{ transform: translateY(0) rotate(0deg); }
+        50%{ transform: translateY(-3px) rotate(2deg); }
+      }
+      @keyframes drift{
+        0%,100%{ transform: translateY(0); filter: saturate(1); }
+        50%{ transform: translateY(6px); filter: saturate(1.08); }
+      }
+      .brand h1{ font-size: 14px; margin:0; letter-spacing:.5px; text-transform: lowercase; }
+      .brand .sub{
+        font-size: 12px; color: var(--muted);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .chiprow{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+      .chip{
+        font-size: 12px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border:1px solid var(--border);
+        background: color-mix(in oklab, var(--panel) 88%, transparent);
+        color: var(--muted);
+        display:inline-flex; gap:8px; align-items:center;
+      }
+      .ico{
+        width: 18px; height: 18px;
+        display:inline-flex;
+        align-items:center; justify-content:center;
+        border-radius: 9px;
+        border: 1px solid var(--border);
+        background: color-mix(in oklab, var(--panel) 82%, transparent);
+        color: color-mix(in oklab, var(--text) 84%, var(--muted));
+        font-size: 12px;
+        flex: 0 0 auto;
+      }
+      .hero{
+        padding: 34px 6px 16px;
+        display:grid;
+        grid-template-columns: 1.15fr .85fr;
+        gap: 18px;
+        align-items: start;
+      }
+      @media (max-width: 880px){
+        .hero{ grid-template-columns: 1fr; }
+      }
+      .headline{
+        border-radius: 22px;
+        padding: 24px 22px;
+        background: color-mix(in oklab, var(--panel) 92%, transparent);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow:hidden;
+      }
+      .headline:before{
+        content:'';
+        position:absolute; inset:-2px;
+        background:
+          radial-gradient(650px 260px at 20% 0%, rgba(109,40,217,.26), transparent 60%),
+          radial-gradient(700px 320px at 100% 25%, rgba(14,165,233,.22), transparent 62%);
+        opacity:.55;
+        pointer-events:none;
+      }
+      .headline > *{ position: relative; }
+      .headline .kicker{
+        font-size: 12px; letter-spacing: 1.6px; text-transform: uppercase;
+        color: color-mix(in oklab, var(--muted) 88%, var(--text));
+      }
+      .headline h2{
+        margin: 10px 0 10px;
+        font-size: 36px;
+        line-height: 1.12;
+        letter-spacing: -0.6px;
+      }
+      .headline p{
+        margin: 0;
+        color: var(--muted);
+        max-width: 60ch;
+      }
+      .mini{
+        border-radius: 22px;
+        padding: 18px 18px;
+        background: color-mix(in oklab, var(--panel) 90%, transparent);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-soft);
+      }
+      .mini h3{
+        margin: 0 0 10px;
+        font-size: 14px;
+        letter-spacing: .2px;
+      }
+      .mini ul{
+        margin: 0; padding: 0; list-style: none;
+        display: grid; gap: 10px;
+      }
+      .mini li{
+        display:flex; align-items:flex-start; gap:10px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .dot{
+        width: 10px; height: 10px; border-radius: 999px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        margin-top: 4px;
+        box-shadow: 0 0 0 6px var(--ring);
+        flex: 0 0 auto;
+      }
+      .grid{
+        margin-top: 22px;
+        display:grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+      }
+      .card{
+        border-radius: 18px;
+        padding: 16px 16px;
+        background: color-mix(in oklab, var(--panel) 92%, transparent);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-soft);
+        transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      }
+      .card:hover{ transform: translateY(-1px); box-shadow: 0 14px 34px rgba(2,6,23,.12); }
+      .stat{ grid-column: span 3; }
+      @media (max-width: 920px){ .stat{ grid-column: span 6; } }
+      @media (max-width: 520px){ .stat{ grid-column: span 12; } }
+      .stat .label{ font-size: 12px; color: var(--muted); }
+      .stat .value{ margin-top: 6px; font-size: 22px; letter-spacing: -0.4px; }
+      .stat .hint{ margin-top: 6px; font-size: 12px; color: var(--muted); }
+      .section{
+        margin-top: 38px;
+      }
+      .section h3{
+        margin: 0 0 10px;
+        font-size: 14px;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: color-mix(in oklab, var(--muted) 88%, var(--text));
+      }
+      .themes .card{ grid-column: span 4; }
+      @media (max-width: 920px){ .themes .card{ grid-column: span 6; } }
+      @media (max-width: 520px){ .themes .card{ grid-column: span 12; } }
+      .theme-title{
+        margin: 0 0 8px;
+        font-size: 16px;
+        letter-spacing: -0.2px;
+      }
+      .theme-desc{ margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+      blockquote{
+        margin: 0;
+        padding: 12px 12px;
+        border-radius: 14px;
+        border: 1px dashed var(--border);
+        background: color-mix(in oklab, var(--panel) 80%, transparent);
+      }
+      blockquote p{ margin:0; font-size: 13px; color: color-mix(in oklab, var(--text) 92%, var(--muted)); }
+      .byline{ margin-top: 10px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+      .byline span{ font-size: 12px; color: var(--muted); }
+      .quotes .card{ grid-column: span 6; }
+      @media (max-width: 920px){ .quotes .card{ grid-column: span 12; } }
+      .quote{ display:grid; gap: 10px; }
+      .pill{
+        display:inline-flex; align-items:center; gap:8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .pill i{
+        width: 10px; height: 10px; border-radius: 999px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        box-shadow: 0 0 0 6px var(--ring);
+        display:inline-block;
+      }
+      .footer{
+        margin-top: 44px;
+        padding: 18px 18px;
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        background: color-mix(in oklab, var(--panel) 90%, transparent);
+        color: var(--muted);
+        font-size: 12px;
+      }
+      code{
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        background: var(--code);
+        padding: 2px 6px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+      button{
+        font: inherit;
+        color: inherit;
+      }
+      .nav{
+        margin-top: 12px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap: 12px;
+        flex-wrap:wrap;
+      }
+      .tabs{
+        display:flex; gap:8px; flex-wrap:wrap;
+        padding: 10px 10px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: color-mix(in oklab, var(--panel) 86%, transparent);
+        box-shadow: var(--shadow-soft);
+      }
+      .tab{
+        cursor:pointer;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        padding: 7px 12px;
+        font-size: 13px;
+        background: color-mix(in oklab, var(--panel) 88%, transparent);
+        color: color-mix(in oklab, var(--text) 90%, var(--muted));
+        transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+        display:inline-flex; gap:8px; align-items:center;
+      }
+      .tab:hover{ transform: translateY(-1px); box-shadow: 0 10px 24px rgba(2,6,23,.10); }
+      .tab[aria-selected="true"]{
+        background: linear-gradient(135deg, color-mix(in oklab, var(--accent) 92%, white), color-mix(in oklab, var(--accent2) 88%, white));
+        border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+        box-shadow: 0 12px 30px rgba(109,40,217,.20);
+        color: white;
+      }
+      .actions{
+        display:flex;
+        gap: 10px;
+        flex-wrap:wrap;
+        align-items:center;
+        justify-content:flex-end;
+      }
+      .input{
+        min-width: 220px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: color-mix(in oklab, var(--panel) 88%, transparent);
+        padding: 10px 12px;
+        color: var(--text);
+        outline: none;
+        box-shadow: 0 0 0 0 rgba(0,0,0,0);
+        transition: box-shadow .18s ease, transform .18s ease;
+      }
+      .input:focus{ box-shadow: 0 0 0 8px var(--ring); }
+      .btn{
+        cursor:pointer;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        padding: 10px 12px;
+        font-size: 13px;
+        background: color-mix(in oklab, var(--panel) 88%, transparent);
+        color: color-mix(in oklab, var(--text) 92%, var(--muted));
+        transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      }
+      .btn:hover{ transform: translateY(-1px); box-shadow: 0 12px 28px rgba(2,6,23,.12); }
+      .btn.primary{
+        background: linear-gradient(135deg, color-mix(in oklab, var(--accent) 92%, white), color-mix(in oklab, var(--accent2) 88%, white));
+        border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+        color: white;
+        box-shadow: 0 12px 30px rgba(14,165,233,.14);
+      }
+      .toggle{
+        display:flex; align-items:center; gap:8px;
+        font-size: 12px;
+        color: var(--muted);
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: color-mix(in oklab, var(--panel) 86%, transparent);
+      }
+      .toggle input{ accent-color: var(--accent2); }
+      .view{ display:none; }
+      .view.active{
+        display:block;
+        animation: fadeUp .32s ease both;
+      }
+      @keyframes fadeUp{
+        from{ opacity:0; transform: translateY(8px); }
+        to{ opacity:1; transform: translateY(0); }
+      }
+      .subgrid{ margin-top: 12px; display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 880px){ .subgrid{ grid-template-columns: 1fr; } }
+      .barlist{ display:grid; gap: 10px; }
+      .barrow{
+        display:grid;
+        grid-template-columns: 170px 1fr 90px;
+        gap: 10px;
+        align-items:center;
+      }
+      @media (max-width: 560px){ .barrow{ grid-template-columns: 1fr; } }
+      .barname{ font-size: 13px; color: color-mix(in oklab, var(--text) 92%, var(--muted)); }
+      .bar{
+        height: 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: color-mix(in oklab, var(--panel) 80%, transparent);
+        overflow:hidden;
+      }
+      .bar > i{
+        display:block;
+        height: 100%;
+        width: 0%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        transition: width .5s cubic-bezier(.2,.9,.2,1);
+      }
+      .barnum{ font-size: 12px; color: var(--muted); text-align:right; }
+      .spark{
+        height: 92px;
+        display:flex;
+        align-items:flex-end;
+        gap: 8px;
+      }
+      .spark .col{
+        flex: 1 1 0;
+        min-width: 12px;
+        height: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: color-mix(in oklab, var(--panel) 78%, transparent);
+        overflow:hidden;
+        position: relative;
+      }
+      .spark .col i{
+        position:absolute;
+        bottom:0; left:0; right:0;
+        height: 0%;
+        background: linear-gradient(180deg, rgba(14,165,233,.95), rgba(109,40,217,.95));
+        transition: height .5s cubic-bezier(.2,.9,.2,1);
+      }
+      .sparklabel{
+        margin-top: 10px;
+        display:grid;
+        grid-template-columns: repeat(var(--spark-cols, 7), 1fr);
+        gap: 8px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .sparklabel span{ text-align:center; }
+      .sparklabel b{ display:block; font-weight: 650; color: color-mix(in oklab, var(--text) 86%, var(--muted)); }
+      .sparklabel em{ display:block; font-style: normal; opacity: .85; font-variant-numeric: tabular-nums; }
+      .quotegrid{ display:grid; gap: 12px; }
+      .quoteitem{
+        border-radius: 18px;
+        padding: 14px 14px;
+        border: 1px solid var(--border);
+        background: color-mix(in oklab, var(--panel) 92%, transparent);
+        box-shadow: var(--shadow-soft);
+        cursor: pointer;
+        transition: transform .18s ease, box-shadow .18s ease;
+      }
+      .quoteitem:hover{ transform: translateY(-1px); box-shadow: 0 14px 34px rgba(2,6,23,.12); }
+      .quoteitem .qmeta{
+        display:flex;
+        justify-content:space-between;
+        gap: 10px;
+        flex-wrap:wrap;
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 10px;
+      }
+      .quoteitem .qtext{ font-size: 14px; margin: 0; }
+      .quoteitem .qactions{ margin-top: 10px; display:flex; gap: 8px; flex-wrap:wrap; }
+      .muted{ color: var(--muted); }
+      .hintline{ margin-top: 8px; font-size: 12px; color: var(--muted); }
+
+      /* reveal on scroll */
+      @media (prefers-reduced-motion: no-preference){
+        .reveal{
+          opacity: 0;
+          transform: translateY(14px);
+          transition: opacity .55s ease, transform .55s cubic-bezier(.2,.9,.2,1);
+          will-change: opacity, transform;
+        }
+        .reveal.in{ opacity: 1; transform: translateY(0); }
+      }
+
+      /* expandable cards */
+      .expandable{ cursor: pointer; }
+      .expandable:focus{ outline: none; box-shadow: 0 0 0 10px var(--ring); }
+      .clamp{
+        display: -webkit-box;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .expanded .clamp{
+        line-clamp: unset;
+        -webkit-line-clamp: unset;
+        overflow: visible;
+      }
+      .card-more{ display:none; margin-top: 10px; color: var(--muted); font-size: 12px; }
+      .expanded .card-more{ display:block; }
+
+      /* confetti */
+      canvas.confetti{
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        pointer-events: none;
+      }
+      /* heatmap */
+      .heatwrap{
+        margin-top: 12px;
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        background: color-mix(in oklab, var(--panel) 90%, transparent);
+        overflow:hidden;
+      }
+      .heathead{
+        display:flex;
+        justify-content:space-between;
+        gap: 12px;
+        flex-wrap:wrap;
+        align-items:center;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+      }
+      .heatgrid{
+        display:grid;
+        gap: 6px;
+        padding: 12px 14px 14px;
+      }
+      .heatrow{
+        display:grid;
+        gap: 6px;
+        align-items:center;
+      }
+      .heatrow .ym{
+        font-size: 11px;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      .heatcell{
+        height: 18px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: color-mix(in oklab, var(--panel) 75%, transparent);
+        transition: transform .12s ease, box-shadow .12s ease;
+      }
+      .heatcell:hover{
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(2,6,23,.14);
+      }
+      .heatlegend{
+        display:flex;
+        gap: 8px;
+        align-items:center;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .sw{
+        width: 14px; height: 14px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: linear-gradient(135deg, rgba(14,165,233,.12), rgba(109,40,217,.28));
+      }
+    </style>
+  </head>
+  <body>
+    <div class="read-progress" aria-hidden="true"><i id="read-progress-i"></i></div>
+    <canvas id="confetti" class="confetti" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="mark" aria-hidden="true"></div>
+          <div style="min-width:0">
+            <h1>dude’s night</h1>
+            <div class="sub">telegram transcript → distilled landing</div>
+          </div>
+        </div>
+        <div class="chiprow" aria-label="metadata">
+          <div class="chip" id="chip-range"><span class="ico" aria-hidden="true">⟡</span><span>…</span></div>
+          <div class="chip" id="chip-messages"><span class="ico" aria-hidden="true">⧗</span><span>…</span></div>
+          <div class="chip" id="chip-participants"><span class="ico" aria-hidden="true">∴</span><span>…</span></div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <div class="tabs" role="tablist" aria-label="navigation">
+          <button class="tab" role="tab" aria-selected="true" data-view="overview"><span class="ico" aria-hidden="true">◐</span>обзор</button>
+          <button class="tab" role="tab" aria-selected="false" data-view="topics"><span class="ico" aria-hidden="true">⌁</span>топики</button>
+          <button class="tab" role="tab" aria-selected="false" data-view="trips"><span class="ico" aria-hidden="true">↯</span>поездки</button>
+          <button class="tab" role="tab" aria-selected="false" data-view="participants"><span class="ico" aria-hidden="true">∷</span>участники</button>
+          <button class="tab" role="tab" aria-selected="false" data-view="humor"><span class="ico" aria-hidden="true">✳</span>юмор</button>
+          <button class="tab" role="tab" aria-selected="false" data-view="quotes"><span class="ico" aria-hidden="true">❝</span>цитаты</button>
+          <button class="tab" role="tab" aria-selected="false" data-view="links"><span class="ico" aria-hidden="true">⧉</span>ссылки</button>
+        </div>
+        <div class="actions">
+          <input class="input" id="global-search" type="search" placeholder="поиск по цитатам…" />
+          <button class="btn" id="theme-toggle" type="button" title="переключить тему">theme: auto</button>
+          <button class="btn primary" id="random-quote" type="button">рандом-цитата</button>
+        </div>
+      </div>
+
+      <main id="views">
+        <section class="view active" data-view="overview">
+          <section class="hero">
+            <div class="headline">
+              <div class="kicker">архив группы</div>
+              <h2>племя как протокол: ужины, логистика, деньги доверия и мемы.</h2>
+              <p>
+                интерактивная компрессия <code>result.json</code>: ритуалы, выборы, срачи, смех — и следы времени, которые неожиданно читаются как биография.
+              </p>
+              <div class="hintline" id="overview-notes"></div>
+            </div>
+
+            <aside class="mini">
+              <h3>ключевые идеи</h3>
+              <ul>
+                <li><span class="ico" aria-hidden="true">∿</span><span><b>ритм</b>: регулярные ужины/встречи, переносы, “кому удобно”.</span></li>
+                <li><span class="ico" aria-hidden="true">⟲</span><span><b>очередь</b>: хостинг как децентрализованный календарь (и вечная потеря синхры).</span></li>
+                <li><span class="ico" aria-hidden="true">⌖</span><span><b>карта</b>: yelp/maps как коллективная навигация по местам.</span></li>
+                <li><span class="ico" aria-hidden="true">⟠</span><span><b>скинуться</b>: подарки и помощь — экономика доверия.</span></li>
+                <li><span class="ico" aria-hidden="true">⟁</span><span><b>пустыня</b>: выезды/berne как слой “племени”.</span></li>
+              </ul>
+            </aside>
+          </section>
+
+          <section class="grid" aria-label="stats">
+            <div class="card stat">
+              <div class="label">чат</div>
+              <div class="value" id="stat-chat">…</div>
+              <div class="hint" id="stat-chat-hint">…</div>
+            </div>
+            <div class="card stat">
+              <div class="label">период</div>
+              <div class="value" id="stat-period">…</div>
+              <div class="hint" id="stat-period-hint">…</div>
+            </div>
+            <div class="card stat">
+              <div class="label">сообщения</div>
+              <div class="value" id="stat-messages">…</div>
+              <div class="hint" id="stat-messages-hint">…</div>
+            </div>
+            <div class="card stat">
+              <div class="label">опросы</div>
+              <div class="value" id="stat-polls">…</div>
+              <div class="hint" id="stat-polls-hint">…</div>
+            </div>
+          </section>
+
+          <section class="section">
+            <h3>таймлайн (интенсивность)</h3>
+            <div class="card">
+              <div class="spark" id="year-spark" aria-label="messages per year"></div>
+              <div class="sparklabel" id="year-label"></div>
+              <div class="hintline">заметка: здесь считаются все объекты экспорта по годам (message + service), тк телега так отдаёт архив.</div>
+            </div>
+          </section>
+
+          <section class="section">
+            <h3>снэпшот тем</h3>
+            <div class="grid themes" id="topic-snapshot"></div>
+            <div class="hintline muted">топики — это матчинг по ключевым словам; одно сообщение может попасть в несколько.</div>
+          </section>
+        </section>
+
+        <section class="view" data-view="topics">
+          <section class="section">
+            <h3>топики</h3>
+            <div class="grid themes" id="topics-grid"></div>
+            <div class="hintline muted">кнопка “в цитаты” открывает фильтр по выбранному топику.</div>
+          </section>
+        </section>
+
+        <section class="view" data-view="trips">
+          <section class="section">
+            <h3>поездки</h3>
+            <div class="subgrid">
+              <div class="card">
+                <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
+                  <div class="muted" style="font-size:13px;">куда “ездили” по сообщениям</div>
+                  <label class="toggle"><input id="toggle-trip-local" type="checkbox" /> включить локальные (la/glendale/venice)</label>
+                </div>
+                <div class="barlist" id="trip-bars" style="margin-top:12px;"></div>
+                <div class="hintline muted">это грубая эвристика по словам в сообщениях, не “официальный журнал поездок”.</div>
+              </div>
+              <div class="card">
+                <div class="muted" style="font-size:13px;">по годам (топ направлений)</div>
+                <div class="hintline" id="trip-years-hint"></div>
+                <div id="trip-series" style="margin-top:12px;"></div>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" data-view="participants">
+          <section class="section">
+            <h3>участники</h3>
+            <div class="subgrid">
+              <div class="card">
+                <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
+                  <div class="muted" style="font-size:13px;">кто сколько писал</div>
+                  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button class="btn" id="sort-participants" type="button">сорт: по убыванию</button>
+                  </div>
+                </div>
+                <div class="barlist" id="participants-bars" style="margin-top:12px;"></div>
+              </div>
+              <div class="card">
+                <div class="muted" style="font-size:13px;">расклад</div>
+                <div class="hintline" id="participants-notes"></div>
+                <div class="hintline">важно: <b>dude’s night</b> = это <b>firas</b>. я их слил в одного человека, чтобы аналитика не врала.</div>
+              </div>
+            </div>
+            <div class="heatwrap" style="margin-top:12px;">
+              <div class="heathead">
+                <div class="muted" style="font-size:13px;">heatmap: кто сколько писал по месяцам</div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                  <label class="toggle">год:
+                    <select id="heat-year" class="input" style="min-width:140px; padding:8px 10px; border-radius:12px;">
+                      <option value="all">all</option>
+                    </select>
+                  </label>
+                  <div class="heatlegend"><span class="sw" aria-hidden="true"></span>больше сообщений → ярче</div>
+                </div>
+              </div>
+              <div id="heatmap" class="heatgrid"></div>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" data-view="humor">
+          <section class="section">
+            <h3>юмор</h3>
+            <div class="subgrid">
+              <div class="card">
+                <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
+                  <div class="muted" style="font-size:13px;">кто шутит (плотность)</div>
+                  <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                    <button class="btn" id="humor-sort" type="button">сорт: score/100</button>
+                    <button class="btn primary" id="humor-random" type="button">рандом-шутка</button>
+                  </div>
+                </div>
+                <div class="barlist" id="humor-bars" style="margin-top:12px;"></div>
+                <div class="hintline muted">метрика грубая: смех-маркеры (😂🤣😅 + лол/ахаха/))) и тп), нормировано на 100 сообщений.</div>
+              </div>
+              <div class="card">
+                <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
+                  <div class="muted" style="font-size:13px;">цитаты шуток</div>
+                  <label class="toggle">участник:
+                    <select id="humor-person" class="input" style="min-width:180px; padding:8px 10px; border-radius:12px;">
+                      <option value="all">all</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="quotegrid" id="humor-jokes" style="margin-top:12px;"></div>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" data-view="quotes">
+          <section class="section">
+            <h3>цитаты</h3>
+            <div class="card">
+              <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
+                <div id="quote-topics" class="chiprow" style="justify-content:flex-start;"></div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                  <label class="toggle"><input id="toggle-live" type="checkbox" checked /> больше “живых”, меньше “новостей”</label>
+                  <button class="btn" id="clear-filters" type="button">сброс</button>
+                </div>
+              </div>
+              <div class="hintline muted" id="quote-hint"></div>
+            </div>
+            <div class="quotegrid" id="quotes-list" style="margin-top:12px;"></div>
+          </section>
+        </section>
+
+        <section class="view" data-view="links">
+          <section class="section">
+            <h3>ссылки (домены)</h3>
+            <div class="card">
+              <div class="barlist" id="domain-bars"></div>
+              <div class="hintline muted">это топ доменов из ссылок в сообщениях.</div>
+            </div>
+          </section>
+        </section>
+      </main>
+
+      <div class="footer">
+        источник: <code>/Users/macbookpro/Downloads/Telegram Desktop/ChatExport_2026-01-26/result.json</code>.
+        этот лендинг — интерактивная “компрессия смысла”: темы, участники, таймлайн, цитаты. оффлайн, без внешних зависимостей.
+      </div>
+    </div>
+
+    <script id="dn-data" type="application/json">
+{"chat": {"name": "Dude’s Night", "type": "private_supergroup", "id": 1255328034, "start": "2020-05-05T18:18:00", "end": "2026-01-25T14:49:16", "messages_total": 28815, "messages": 28740, "service": 75, "polls": 39, "money_like_msgs": 373}, "participants": [{"name": "Dude’s Night", "count": 6935, "note": "sender==chat_name"}, {"name": "Nairi Akopian", "count": 5901}, {"name": "Arman Sarkisyan", "count": 4972}, {"name": "Artur Egiazaryan", "count": 3594}, {"name": "Pasha Yozhik", "count": 3241}, {"name": "Sasha Kastushkin", "count": 2591}, {"name": "Tim Enso", "count": 1020}, {"name": "Feras", "count": 486}], "years": [{"year": 2020, "count": 4386}, {"year": 2021, "count": 8748}, {"year": 2022, "count": 7975}, {"year": 2023, "count": 4136}, {"year": 2024, "count": 2665}, {"year": 2025, "count": 894}, {"year": 2026, "count": 11}], "topics": [{"id": "meetups", "title": "встречи/расписание", "desc": "когда/где/во сколько; переносы; сборы", "count": 1947}, {"id": "rotation", "title": "очередь/хостинг", "desc": "кто хостит; кто вместо; синхра очереди", "count": 285}, {"id": "places", "title": "места/еда", "desc": "рестики; куда пойти; что едим", "count": 632}, {"id": "travel", "title": "поездки/букинг", "desc": "airbnb/booking; билеты; машины; логистика", "count": 335}, {"id": "money", "title": "деньги/скинуться", "desc": "подарки; сборы; переводы", "count": 424}, {"id": "events", "title": "ивенты/пустыня", "desc": "burning man/пустыня; вегас; большие выезды", "count": 97}], "domains": [{"domain": "yelp.to", "count": 89}, {"domain": "maps.app.goo.gl", "count": 61}, {"domain": "youtu.be", "count": 46}, {"domain": "instagram.com", "count": 38}, {"domain": "goo.gl", "count": 33}, {"domain": "abnb.me", "count": 28}, {"domain": "airbnb.com", "count": 25}, {"domain": "booking.com", "count": 22}, {"domain": "ru.airbnb.com", "count": 21}, {"domain": "youtube.com", "count": 16}, {"domain": "ra.co", "count": 15}, {"domain": "vrbo.com", "count": 10}, {"domain": "soundcloud.app.goo.gl", "count": 9}, {"domain": "soundcloud.com", "count": 9}], "quotes": [{"topic": "meetups", "date": "2022-04-18T00:36:11", "from": "Nairi Akopian", "text": "Привет, братики. Как смотрите на то, чтобы перенести DN с 27 на 29 апреля (пятница) ? Я поменяюсь с Артуром и сделаю для нас ужин в честь моего др. Также планирую собрать уже широкий круг гостей 1 мая (вск) у Артура на дневной ..."}, {"topic": "meetups", "date": "2024-02-14T12:16:42", "from": "Sasha Kastushkin", "text": "Привет! Наири, спасибо, что ты контролируешь процессы. Сегодня у нас планы на вечер. До конца недели тоже не получается. Может подумаем насчет встретиться на выходных в расширенном составе? Бранч там например."}, {"topic": "meetups", "date": "2021-08-03T10:43:59", "from": "Tim Enso", "text": "Парни, меня в среду не будет. Не получается у меня сейчас среди недели приезжать на dn. Не хочу чтобы вы обижались на меня когда я не приезжаю, поэтому думаю будет лучше если эти вечера какое-то время будут проходить без меня)"}, {"topic": "meetups", "date": "2022-01-12T13:45:54", "from": "Artur Egiazaryan", "text": "Брачосы я буду праздновать др в этом году вместе с моше у них в меншне. Но хочу перед этим поужинать в любимом Petit Ermitage с самыми любимыми и близкими. Будем мы и 2 девочки Ви и Джулька. Подробности расскажу на DN"}, {"topic": "meetups", "date": "2020-10-07T12:24:33", "from": "Pasha Yozhik", "text": "@kastsiushkin ко мне внезапно приехали Белоруские активисты в лице Микиты и Дороничева (из Дудя), и я хочу с ними потусить раз они приехали, и если мы пожжем костер на пляже где то на районе то можем все вместе, в Глендэйл я се..."}, {"topic": "meetups", "date": "2020-12-22T09:14:15", "from": "Sasha Kastushkin", "text": "Ребят, я вчера закомитился на дюлс найт, но думаю придется отменить у меня. Завтра заедут ребята, пока меня не будет. Надо подготовить немного квартиру и их встретить показать. Вообщем чувствую, что слишком дофига обязательств ..."}, {"topic": "meetups", "date": "2021-01-27T16:55:25", "from": "Arman Sarkisyan", "text": "Ферас немного не дописал своё предложение, парни, собираемся у него сегодня, посидим с его родителями вместе, кто не знаком с ними познакомиться)) план такойно хост сегодня я все равно)) и ещё мы с Тимом предлагаем букетик маме..."}, {"topic": "meetups", "date": "2021-08-03T08:59:27", "from": "Nairi Akopian", "text": "Ребят, завтра в 12:00 созваниваемся, чтобы обсудить Аляску. Посмотрите, пожалуйста, заранее активности, чтобы было, что обсуждать. Подтвердите, пожалуйста, удобно ли вам время. Давайте предложим поучаствовать ещё Ярику и Ларсик..."}, {"topic": "rotation", "date": "2021-01-27T16:55:25", "from": "Arman Sarkisyan", "text": "Ферас немного не дописал своё предложение, парни, собираемся у него сегодня, посидим с его родителями вместе, кто не знаком с ними познакомиться)) план такойно хост сегодня я все равно)) и ещё мы с Тимом предлагаем букетик маме..."}, {"topic": "rotation", "date": "2022-03-16T13:47:26", "from": "Sasha Kastushkin", "text": "Друзья, сегодня моя очередь, буду вас ждать у себя к 7, соответственно к 7:30 соберемся ;) Сегодня у нас будет еще один гость из Нью Йорка, а в недавнем прошлом из Торонто - Егор. В программе запланирована совместная готовка, р..."}, {"topic": "rotation", "date": "2024-04-01T13:14:43", "from": "Pasha Yozhik", "text": "Привет друзья! Давайте обсудим крипту на этом DN. хотелось бы разобраться что вы делаете с закрытым каналом, и залететь с вами, и зарабатывать всей командой Идеально было бы в каком нибудь месте в Donwtowne где можно открыть ко..."}, {"topic": "rotation", "date": "2021-04-21T09:14:00", "from": "Nairi Akopian", "text": "Братья, предлагаю сделать на следующей неделе dudes night только нашим составом 29 апреля (четверг) В честь моего др, я бы сделал вне очереди, если @kastsiushkin не против. ( его очередь просто будет )"}, {"topic": "rotation", "date": "2020-06-15T17:22:06", "from": "Artur Egiazaryan", "text": "Кто будет хостом на этой неделе? Предлагаю сделать у меня на крыше + если у кого то будет желание помочь дособрать пару кусков мебели которые я не могу собрать один, будет вообще"}, {"topic": "rotation", "date": "2022-01-11T11:11:40", "from": "Dude’s Night", "text": "Посетив почти все основные города, понял насколько глупый народ. Особенно в ресторанах. Понятия outside of the box просто нет. Ещё раз в Колумбию только за ролексами на них очередь здесь меньше."}, {"topic": "rotation", "date": "2022-11-23T13:28:23", "from": "Nairi Akopian", "text": "Братик, ты же хост сегодня, уже второй раз отменяешь день в день) Нужно заранее договариваться с кем-то, кто вместо тебя сделает, если сам не можешь) Кто готов вместо Ферлы?"}, {"topic": "rotation", "date": "2022-03-09T10:18:23", "from": "Nairi Akopian", "text": "Братья, мы меняемся с @kastsiushkin , чтобы у него была возможность захостить дома. У меня ее в любом случае пока нет. Поэтому сегодня я хост. Есть предложения по рестику?"}, {"topic": "places", "date": "2023-05-22T12:02:47", "from": "Artur Egiazaryan", "text": "Ельцин 14 августа 1998 года заявил что в России не будет дефолта. А спустя три дня Правительство и Центробанк объявили о дефолте. Нейросеть сделала такое же видео с Байденом, который уверяет что в США не будет дефолта"}, {"topic": "places", "date": "2020-09-15T19:30:44", "from": "Tim Enso", "text": "Дорогие друзья, 30го сентября у меня День Рождения и я хочу, чтобы вы разделили этот день со мной! Вас ждет: музыка, кальяны, танцы, веселье, еда, светяшки и живое общение! Дресс код: boho style/ white outfit. Собираемся в 5 ча..."}, {"topic": "places", "date": "2021-01-27T16:55:25", "from": "Arman Sarkisyan", "text": "Ферас немного не дописал своё предложение, парни, собираемся у него сегодня, посидим с его родителями вместе, кто не знаком с ними познакомиться)) план такойно хост сегодня я все равно)) и ещё мы с Тимом предлагаем букетик маме..."}, {"topic": "places", "date": "2022-03-16T13:47:26", "from": "Sasha Kastushkin", "text": "Друзья, сегодня моя очередь, буду вас ждать у себя к 7, соответственно к 7:30 соберемся ;) Сегодня у нас будет еще один гость из Нью Йорка, а в недавнем прошлом из Торонто - Егор. В программе запланирована совместная готовка, р..."}, {"topic": "places", "date": "2022-05-10T15:34:22", "from": "Dude’s Night", "text": "Всем привет. Кто подскажет или может сможет сделает - передвижной бар. Так чтобы он дома стоял и место не занимал, но выглядел как Арт. Но при этом я там мог бухло хранить и коктейли делать. Такой передвижной бар, чтобы выкатил..."}, {"topic": "places", "date": "2023-04-28T19:49:47", "from": "Nairi Akopian", "text": "Fi'lia в Sls Brickell, приятный low key restaurant, там вкусно и просто и нет грудкой музыки Dirty French, роскошно, вечерне, супер еда Queen Miami Beach, новое место, громко шумно , пафосно, все тусуются Flemings prime steakho..."}, {"topic": "places", "date": "2023-06-12T09:28:06", "from": "Nairi Akopian", "text": "хей хей! У Тани на следующей неделе 21 июня (среда) день рождения, и я хочу собрать ее калифорнийских друзей на поздравительный зум в полночь по нашему местному времени – это 2pm по Калифорнии Сейчас сделаю группу – поможешь по..."}, {"topic": "places", "date": "2023-07-06T08:52:47", "from": "Pasha Yozhik", "text": "Для любителей быть не как все: изобретён велосипед с квадратными колесами и засекреченными гусеницами Студия The Q разработала и представила миру полнофункциональный велосипед с квадратными колёсами, на котором можно ездить. Ве..."}, {"topic": "travel", "date": "2024-11-14T14:12:01", "from": "Artur Egiazaryan", "text": "Рубрика «просчитались, но где?». В Лос-Анджелесе задержали четырёх человек, которые при помощи костюма бурого медведя (таких в Южной Калифорнии не видели уже больше века) сымитировали нападение зверя на свои автомобили и обману..."}, {"topic": "travel", "date": "2020-10-22T17:30:21", "from": "Dude’s Night", "text": "Dudes Night, [Oct 22, 2020 at 5:30:07 PM]: Bro- извини, можешь срочно заменить на этот Feras and the team at Ferla Bikes sold us a Ferla Cargo Bike Royce Edition. We have 4 kids. The the youngest is 2 months. And the Oldest is ..."}, {"topic": "travel", "date": "2023-04-12T14:00:27", "from": "Sasha Kastushkin", "text": "Дельта все таки заебись! Забукал самые дешевые тикеты из НЙ до Маями. Сейчас забукали с Пашкито другой билет из Маями. Думал пропадет один билет. Зашел к ним, оказывается они разрешают отменить билет за кредиты у них. Вообщем о..."}, {"topic": "travel", "date": "2021-06-10T12:13:03", "from": "Nairi Akopian", "text": "Feras ты забронишь машины или мне забронить? @onniart посмотришь билеты? Давайте сегодня- завтра все заброним, чтобы закрыть вопрос)"}, {"topic": "travel", "date": "2021-02-22T16:05:47", "from": "Tim Enso", "text": "Парни, моя страховка отказывается брать на себя починку за вандализм рентованной машины Че делать?"}, {"topic": "travel", "date": "2021-02-20T00:31:44", "from": "Artur Egiazaryan", "text": "Выношу на обсуждение Майами с 15-18 апреля. Поставьте все кто in, что бы мы могли взять билеты и начать искать дом"}, {"topic": "travel", "date": "2022-03-24T15:56:08", "from": "Nairi Akopian", "text": "Ребята, хочу уехать в Остин на недельку и не пропускать наш DN. Отпишитесь, плиз. Мне надо билеты взять"}, {"topic": "travel", "date": "2022-07-26T13:08:21", "from": "Dude’s Night", "text": "И я порешал билеты на Берн, дадут 10-12 штук , надо будет тоже обсудить Но главное по исландии подумай"}, {"topic": "money", "date": "2020-08-10T21:42:32", "from": "Nairi Akopian", "text": "Я поспорил с младшим братом, что буду делать 100 отжиманий через 3 месяца. Если я не сделаю, то даю ему $1000. Если он не сделает, то отдаст свой новый телефон ребёнку из детского дома или тому, кого я выберу и будет месяц подм..."}, {"topic": "money", "date": "2022-03-16T13:47:26", "from": "Sasha Kastushkin", "text": "Друзья, сегодня моя очередь, буду вас ждать у себя к 7, соответственно к 7:30 соберемся ;) Сегодня у нас будет еще один гость из Нью Йорка, а в недавнем прошлом из Торонто - Егор. В программе запланирована совместная готовка, р..."}, {"topic": "money", "date": "2022-07-26T16:17:56", "from": "Pasha Yozhik", "text": "guys, sending you investment opportunity of a home in Tulum. I know this guy personally (the CEO), sending you a pdf about the company and the concept, and the second one is the property in Tulum. $29k investment. Tell me what ..."}, {"topic": "money", "date": "2023-02-02T06:22:30", "from": "Dude’s Night", "text": "400$ Tecun Pods - это новая линия наиболее выгодного и доступного жилья в центре Лос Анджелеса. Состоят из большого количества маленьких модулей в котором есть всё для комфортного проживания . Wifi подключение Камера хранения н..."}, {"topic": "money", "date": "2024-06-13T22:30:29", "from": "Arman Sarkisyan", "text": "Привет. Мы готовим подарок Константину собираем на диджейские вертушки и колонки. $80-100 с человека. Если есть желание поучаствовать то можно скинуть на этот венмо желаемую сумму и укажите ваше имя чтобы Костя знал от кого. Мы..."}, {"topic": "money", "date": "2025-10-29T12:14:18", "from": "Artur Egiazaryan", "text": "В США открылись предзаказы на первого домашнего робота-помощника за $499 в месяц Компания из Калифорнии — 1X Technologies — представила NEO, первого в мире потребительского гуманоидного робота. Он умеет убираться, загружать пос..."}, {"topic": "money", "date": "2025-12-19T13:30:16", "from": "Sasha Kastushkin", "text": "Привет друзья! Мы с Максом (резолют) и моим коворкером тут пилили пилили и допилили МВП сайтика. Пока это микс бэндкемпа и саундклауда. Хотел вас попросить сделать там аккаунт и потратить $2.5-3 на какой-нибудь тречок. Нам это ..."}, {"topic": "money", "date": "2023-03-11T20:46:51", "from": "Pasha Yozhik", "text": "Я в пятницу в этот банк перевел деньги для Криса. Вот теперь интересно как он будет их получать. Сильно, я с Ланой говорил, у ее компании там 50 лямов лежит, они естественно не могут их достать. Там плохо будет"}, {"topic": "events", "date": "2022-05-10T15:34:22", "from": "Dude’s Night", "text": "Всем привет. Кто подскажет или может сможет сделает - передвижной бар. Так чтобы он дома стоял и место не занимал, но выглядел как Арт. Но при этом я там мог бухло хранить и коктейли делать. Такой передвижной бар, чтобы выкатил..."}, {"topic": "events", "date": "2023-10-16T18:55:39", "from": "Artur Egiazaryan", "text": "Первая премьера в США русского фильма, от режиссера культового фильма Generation П В.Гинзбурга Empire V. Trailer:  Долгожданную, самую обсуждаемую в прессе, запрещенную киноленту вы сможете посмотреть 18 октября в Китайском кин..."}, {"topic": "events", "date": "2025-07-21T14:32:56", "from": "Nairi Akopian", "text": "This is your last chance for tickets to dance up the sun, build the dream, and help fan the flame of Burning Man in Black Rock City. Register TODAY Monday, July 21 at tickets.burningman.org. Registration remains open until Tues..."}, {"topic": "events", "date": "2020-10-05T17:11:59", "from": "Arman Sarkisyan", "text": "Парни, я так понял, что мы перенесли на завтра нашу встречу, но мы с Артуром завтра уезжаем в Вегас, это недавно решилось, и если честно я совсем забыл про планы на перенос нашего ивента"}, {"topic": "events", "date": "2022-02-22T20:04:31", "from": "Sasha Kastushkin", "text": "Мы договаривались перенести, но я не против и завтра ужин перед ивентом. Я уже подписался на велик после работы, освобожусь после 7."}, {"topic": "events", "date": "2022-08-04T15:12:21", "from": "Artur Egiazaryan", "text": "@kipiyozh Пашкито брачо, мы может быть будем делать кемп на берне. Если интересно, присоеденяйся к разговору"}, {"topic": "events", "date": "2021-04-19T22:44:40", "from": "Nairi Akopian", "text": "А во скока вы приезжаете туда? Мы с Вегаса ехать будем . После работы выдвинемся к вам"}, {"topic": "events", "date": "2022-07-26T13:08:21", "from": "Dude’s Night", "text": "И я порешал билеты на Берн, дадут 10-12 штук , надо будет тоже обсудить Но главное по исландии подумай"}], "notes": {"topic_model": "regex matcher; one message can hit multiple topics", "sender_chatname": "\"Dude’s Night\" appears as sender sometimes (likely forwarded/admin/systems)"}}
+    </script>
+
+    <script id="humor-data" type="application/json">
+{"leaderboard":[{"name":"Tim Enso","total":904,"humor_msgs":113,"score":624,"score_per_100":69.0},{"name":"Arman Sarkisyan","total":4775,"humor_msgs":629,"score":2618,"score_per_100":54.8},{"name":"Sasha Kastushkin","total":2390,"humor_msgs":276,"score":855,"score_per_100":35.8},{"name":"Artur Egiazaryan","total":3306,"humor_msgs":258,"score":1088,"score_per_100":32.9},{"name":"Nairi Akopian","total":5402,"humor_msgs":370,"score":1596,"score_per_100":29.5},{"name":"Pasha Yozhik","total":2481,"humor_msgs":153,"score":490,"score_per_100":19.8},{"name":"Firas","total":6384,"humor_msgs":318,"score":1116,"score_per_100":17.5}],"jokes":{"Artur Egiazaryan":[{"date":"2020-11-24T01:30:07","text":"Брачо было бы эпично если бы ты сказал парни я застрал, уже сутки не могу выбраться, еле поймал связь, спасайте! Дальше скинул бы локацию и пропал со связи😂"},{"date":"2023-06-13T09:59:06","text":"Братик всем говори что ты в отношениях, но у тебя есть классный друг который ярый противник отношений. Но ты будешь рад если они меня смогут переубедить😉😁"},{"date":"2022-05-12T00:34:23","text":"В такие моменты хочу показать сообщение от одного из участников нашего пула. Весёлая история ) но сейчас это самая верная стратегия на мой взгляд👌🏻😎"},{"date":"2021-12-23T23:40:14","text":"Брачо есть теория, что ты специально опаздываешь что бы попасть в экстремальную ситуацию😂😅 как ты можешь прокомментировать это?😃"},{"date":"2021-05-12T15:24:42","text":"Это ловушка для Наири, чтоб узнать был ли ты у них в гостях братик😁 как только узнаешь каким, мы будем знать где ты успел побывать😉"},{"date":"2023-02-24T09:47:17","text":"Feras LA Ферла спасибо за школу работы с плохим сервисом, сегодня я заработал $400. С меня ужин по возвращению😁"},{"date":"2022-06-04T16:05:37","text":"Чат близок к попаданию в мют😂 пора вам определиться ребята где вы будете поедать части убитых животных😊"},{"date":"2023-05-07T15:44:36","text":"Я вчера за ночь привел 3х телок к себе домой и не стал никого трахать. Практикую осознанный секс 😁"},{"date":"2021-10-24T21:39:18","text":"Тогда готовимся, посмотрите все пару видосов на ютубе чтоб игра была серьезная😁😁"},{"date":"2023-06-13T13:46:13","text":"Наири просто выдумывает Пашкит, не переживай. В миджорни создает картинки и кидает их сюда😂"},{"date":"2020-08-11T11:12:41","text":"Я буду судить это все за 30% от тотал😂 слишком много денег, могут начаться махинации"},{"date":"2021-04-15T01:15:01","text":"😁😁 это вы пишите чтоб он потом прочитал и не так сильно на вас обижался?)"}],"Sasha Kastushkin":[{"date":"2022-09-21T21:09:33","text":"Президент Колумбии призвал легализовать кокаин во всем мире. С таким предложением Густаво Петро обратился к Генассамблее ООН: «‎Что более ядовито для человечества? Кокаин, углеводороды или нефть?»‎ Просто он понял, чт..."},{"date":"2021-07-06T11:11:38","text":"Парни, если кто-то хочет сделать на этой неделе, то я на следующей перехвачу эстафету. Чувствую, что не очень готов захостать еще, надо бы немного влиться в этот ритм. Ну или лень, я хз 😅"},{"date":"2021-07-25T03:11:59","text":"Пока из планов починить колесо на старом велике и прогуляться с Виком, пока он кататься с переломом не может 😅 Я думаю ближе к вечеру если еще там будете с удовольствием заехал бы"},{"date":"2020-10-16T19:58:51","text":"Привет братья, Нью Йорк идет хорошо. Свадьба была бомбическая, как в фильмах) работать и отдыхать конечно сложно, лучше не работать! Завтра идем на хайк, грибочки все дела 😄"},{"date":"2021-12-28T18:03:53","text":"Инстаграм культура толкает к шэрингу сэлфи! Запостил сэлфи и активности в разы больше, что естественно приятно 😄 Так весь тэк и работает, оптимизируя под легкий допамин"},{"date":"2021-10-22T19:45:36","text":"Спасибо брачос, завтра рано утром надо вставать, занимаюсь домашними делами сегодня. Подключил принтер к вай фай, как же теперь будет легче возвращать всё 😂"},{"date":"2020-10-07T11:54:02","text":"Ну я в принципе вчера норм запаковался, забрал ключи и офигел как там места мало, меньше чем в первый раз когда смотрел 😂 Ну да ладно, это не по теме."},{"date":"2021-04-17T15:41:12","text":"Ну большого желания конечно нет, это может быть гвоздь в крышку аккаунта 😅 Сорри парни, дел миллион. Могу сделать на свой аккаунт через часик"},{"date":"2022-07-14T13:13:36","text":"Хорошо посидели, дорага 😂 Поржали очень даже качественно и домой рано поехали. Я уже скучаю у тебя дома сделать, как-то там по особенному."},{"date":"2022-02-10T13:52:55","text":"Also superbowl on Sunday around 3:30, would be cool to watch, la team plays. We can organize at my place if we make it back in time 😄"},{"date":"2022-01-11T12:24:51","text":"Так себе) мы были на похожем пляже, где нас еще и хотели развести на бабки. Там и пляж был хуже. Ну это мы восприняли как урок 😂"},{"date":"2022-08-10T08:46:00","text":"Я поучаствую, но скорее всего не буду. У нас планы есть на субботу и другое др уже подтвердили. Приглос получил на +1 😂"}],"Firas":[{"date":"2022-11-28T01:02:24","text":"Feras New habits 11/28- 12/23 Cell Phone Detox (1hr before sleep and no cell phone before 9am)- except Family Morning exercise “Feras” El Classico 10 min meditation per day Plan a Day via daily planner (weekdays) 100 ..."},{"date":"2020-10-22T17:30:21","text":"Dude’s Night, [Oct 22, 2020 at 5:30:07 PM]: Bro- извини, можешь срочно заменить на этот Feras and the team at Ferla Bikes sold us a Ferla Cargo Bike Royce Edition. We have 4 kids. The the youngest is 2 months. And the..."},{"date":"2022-01-11T11:11:40","text":"Посетив почти все основные города, понял насколько глупый народ. Особенно в ресторанах. Понятия outside of the box просто нет. Ещё раз в Колумбию только за ролексами 😃на них очередь здесь меньше. 😅"},{"date":"2023-09-06T13:36:22","text":"Я после всех стрессов, думаю иммунитет не в лучшем состоянии. Если бы не улетал, мне было бы похуй. Я до сих пор не кадрированный 😂"},{"date":"2022-03-16T13:57:17","text":"Папа, конечно hustler. Я думал он будет отставать, тк я бегаю или быстро хожу. он бегом наверх и вниз 😀 Я немного офигел 😅"},{"date":"2020-05-26T19:57:43","text":"Есть слух, что те кто подал на unemployment сейчас, фиг потом получат гражданство. Какие мысли по этому поводу? —— LOL"},{"date":"2022-07-18T10:38:33","text":"Arman, сейчас проснётся и скажет бля Найри did I gave you an approval to share this? 😂😂😂"},{"date":"2021-05-14T15:23:23","text":"The entrepreneur of the year! С кремнёвой долины 😬 Речь одна и та же 😅😅😅прям зазубрил"},{"date":"2021-05-11T22:23:18","text":"Например, вечер азиатской кухни или Tim любимой итальянской кухни, а Arman а любимой тайской 🤣"},{"date":"2021-04-12T16:18:33","text":"Один раз сделаешь благотворительный трах, потом займи $2000 на 24 часа «и билет в Россию» 🤣"},{"date":"2022-02-02T23:10:34","text":"и опять всем похуй 😂 Good night! я уже в постели, но не мог не ответить на это фото"},{"date":"2022-07-14T12:47:41","text":"A lot of words were pronounced like lucky you Feras can go to Bali for a month 😂"}],"Pasha Yozhik":[{"date":"2023-04-08T06:26:29","text":"Я затусил с балериной. Она в большом высступала год, в Ла Скале, в Опере Гание в Париже, в НЙ танцевала в MET. Мы с ней снюхались кетамином вчера, я не знал что балерины так тусят 😂"},{"date":"2022-06-18T09:15:07","text":"❗️«Когда Казахстан начал терять суверенитет, кто помог? Россия, дон!» Немного эксклюзивной политической аналитики от российского \"академика\"🤣🤦‍♀️ DeXто Украина | Новости, Война"},{"date":"2021-01-30T14:28:46","text":"Tim можешь заменить Бутылку у Артура, на что то посерьёзнее типо мачете или дилдо, ну что-то посолиднее 😂"},{"date":"2022-08-01T04:40:21","text":"Был на границе с Россией:) меня быстро пограничники развернули с допросом. Я до нее 3 км пешком шёл 😂"},{"date":"2024-02-11T22:13:25","text":"Мы гнали пипец, потому что впереди ехала машина и собирала тикеты 😂 и предупреждала где менты"},{"date":"2021-09-25T19:06:34","text":"Я пиздато вчера затусил до 5 утра. Так что со мной мой женщина больше не разговаривает 😂"},{"date":"2025-12-29T19:20:38","text":"Арчи, позови лучше девченок которые возле тебя вчера танцевали. Их было 15. Выбери 2 🤣"},{"date":"2021-05-06T10:52:20","text":"@Nairiak это значит что ты не ушел в работу, а продолжаешь свои грязные штучки 😂"},{"date":"2021-12-07T19:42:44","text":"Брачо а что с толстовками про которые ты нас спрашивал, какой цвет и размер? 😂"},{"date":"2023-03-17T00:38:17","text":"Все вроде проголосовали за 12 мая кроме Арманчика которому одобна любая дата 😂"},{"date":"2020-08-07T13:04:18","text":"Ферасу отдельное спасибо, он вообще бог! это тебе не картошку почистить 😂"},{"date":"2024-10-30T17:29:03","text":"У нее по средам doctor night 😂 Шучу, конечно, надеюсь все будет хорошо 🫶"}],"Arman Sarkisyan":[{"date":"2021-10-13T12:23:54","text":"Братики привет, сегодня моя очередь хостить, и после НЙ хочется посетить пиздатый ресторан у нас на местности, потратив некоторое время, я нашёл топовый марокканский ресторан в LA, предлагаю сегодня его затестить😊😁вст..."},{"date":"2021-05-11T15:04:19","text":"Они конечно будут соглашаться, Наири будет просить подписать соглашение о неразглашении результатов тестирования, а после подписания будет вероломно вытаскивать сиськи прямо на улице и начинать их натирать😅😁"},{"date":"2020-10-05T17:11:59","text":"Парни, я так понял, что мы перенесли на завтра нашу встречу, но мы с Артуром завтра уезжаем в Вегас, это недавно решилось, и если честно я совсем забыл про планы на перенос нашего ивента😅😁"},{"date":"2020-10-14T00:20:44","text":"Предлагаю завтра днём списаться, но я предварительно готов захостить, если все в деле, но единственное у меня дома кроме кровати ничего нету😅"},{"date":"2021-05-04T00:41:45","text":"Артур скинь это трек, это был разьеб😁ты так тут танцуешь, что после такого она должна войти в твой список обета молчания😈😄"},{"date":"2022-10-20T01:31:41","text":"Ты очень много выбрал брачо😁два важных критерия есть: чтобы была большая гостиная, где все будут тусоваться, и побольше спальных мест)"},{"date":"2023-03-17T15:07:33","text":"Ну мы хотя бы сможем исключить варианты, которые точно не подходят, думаю через 2 голосования сможем выбрать окончательную дату😁"},{"date":"2020-07-10T10:59:40","text":"Изучил вопрос, понял что это реально, но проверить мы точно сейчас это сможем) так что хз, все относительно как всегда😁"},{"date":"2023-02-05T10:24:18","text":"Я помню этот момент)) мы нормально вкурились тогда, да и план был заебись😄😁😁😂"},{"date":"2020-12-21T14:33:20","text":"Посмотрел я видео) у меня единственное был все видео один вопрос, как чувак не узнал его голос😅😄"},{"date":"2023-03-14T17:26:46","text":"Мне в целом любой вариант ок) для меня просто каждый поход в рич это что-то не очень комфортное концептуально😄"},{"date":"2020-10-14T12:19:48","text":"Предлагаю у Артура на крыше собраться, если в лагуне будем собираться я там смогу быть не раньше 8 наверно😅"}],"Nairi Akopian":[{"date":"2022-10-20T22:35:06","text":"Итак, гайз, информация по предстоящему мероприятию 🍓 1. Что дарим. Чемодан Rimowa. Он давно его хотел и с его перелетами в этом году все его чемоданы ушли в лучший мир, так что он точно будет очень рад. Чемодан я уже ..."},{"date":"2023-01-07T15:27:37","text":"Никогда не понимал негатива по поводу новых дизайнов BMW. Если мне вдруг не нравится с первого раза, я смотрю второй 😂😂😂 Ну во поняли насколько я объективен 😂😂😂"},{"date":"2023-05-17T09:47:28","text":"Прямо сейчас ведём закрытый зум для нашего Инвестиционного Пула. Выступает руководитель фонда Jets.Capital , который проинвестировал на ранней стадии в десятки крипто стартапов. Тема: какие крипто проекты выстрелят в ..."},{"date":"2022-03-01T15:59:49","text":"Я посмотрел. Он против войны. Украина сама ебашит ракетами в свои жилые здания, но он абсолютно точно против войны, хотя поддерживает полностью российскую власть «на протяжении всей ее срока годности» 😂"},{"date":"2024-04-22T21:06:41","text":"Братики, если я вас исключил / исключу из семьи на гугле, то не удивляйтесь, пожалуйста❤️ Это только на гугле!😂 Я вас очень люблю, но нужно добавить Варданчика, маму и папу❤️ Сказаться может на youtube"},{"date":"2021-06-16T17:36:12","text":"Кстати, BMW recently revealed the 2020 8 Series Gran Coupe as a replacement to the 6 Series Gran Coupe. все ок, братик, люблю твой необоснованный сарказм и БМВ 😜и не стесняюсь спросить / уточнить ❤️"},{"date":"2023-01-10T02:49:23","text":"Еду со свидания) Девочка мне сказала, что слышала, что у меня большой член 😂😂😂😂😂😂😂😂😂 ( он обычный))"},{"date":"2022-02-17T11:23:57","text":"Мне коуч сказал, что мне нравятся стервозные женщины, потому что я охотник и теряю интерес к женщинам, которые мне отдаются полностью и сразу 😂😂😂😂"},{"date":"2020-11-10T16:19:39","text":"Братья, соскучился по вам просто пиздец, но не уверен, что смогу приехать, если далеко. В идеале у Артура на крыше собраться))))) у меня последниие дни перед дедлайном по стенфорду"},{"date":"2023-01-10T03:02:32","text":"И еще я встречался с девочкой архитектором, которая думает, что красивая, но на самом деле нет 😂😂😂😂😂😂😂"},{"date":"2020-10-07T12:02:26","text":"Ферас, братик, мы тебя очень благодарны! Не стесняйся нам говорить нет, когда не по кайфу. А мы со своей стороны сделаем так, чтобы было больше по кайфу 😏"},{"date":"2020-09-22T21:56:23","text":"Ферас, братик, если у тебя есть какая-то приницпиальная позиция позиция по этому вопросу, то просто выскажи ее) без претензий к моей, пожалуйста 😂"}],"Tim Enso":[{"date":"2021-02-20T12:58:42","text":"Парни, мне сейчас для документов нужно сделать прививку от столбняка, её делают взрослым каждые 5-10 лет. Вот что вы думаете по этому поводу? Делать или сделать так чтобы не делать? 😁"},{"date":"2020-05-12T17:24:53","text":"Ферас, Брачо, ты не против если у тебя соберёмся? Я бы позвал к себе, но у меня пока ещё не готова квартира 😁 новоселье устрою потом отдельно"},{"date":"2020-08-10T20:50:09","text":"Нихрена не услышал, но люблю вас ребятки 😂 Тихо смотрю, как вы качественно раз..бали на выходных. Сетку натягивали? 😅"},{"date":"2020-08-10T20:50:09","text":"Так хочется ответить тебе что мы не только сетку натягивали, но тот чат это не поймёт 😂"},{"date":"2021-03-18T23:44:21","text":"Я не слушал твои аудио братик, но только что хотел предложить поехать в среду на джаз 😂"},{"date":"2021-04-09T11:48:07","text":"Парни, у кого есть юрист по страховым? Enterprise выставил счёт на $5К мне 😆"},{"date":"2021-03-26T19:08:49","text":"За один день конечно собрать все вещи представляется мне маловероятным 😂"},{"date":"2021-06-08T23:53:27","text":"Мы с Арманом по телефону обсудили твой логотип, Брачо 😁 мне нравится"},{"date":"2021-07-10T20:50:06","text":"Вы обсуждали каждого типа брать ли Армана или Артура в поездку, да? 😁"},{"date":"2020-08-29T23:01:00","text":"Брачо, если тебе угрожают, просто подмигни и мы все поймём 🤣"},{"date":"2021-04-12T08:19:42","text":"Парни, как вы смотрите на то чтобы дюдс найт завтра сделать? 😁"},{"date":"2021-02-17T16:24:57","text":"А кто-то из вас хочет привезти армянских сладостей? 😁"}]}}
+    </script>
+
+    <script>
+      const $ = (sel, el = document) => el.querySelector(sel);
+      const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
+
+      const data = JSON.parse($("#dn-data").textContent.trim());
+      const fmt = (n) => new Intl.NumberFormat("ru-RU").format(n);
+      const ymd = (s) => (s ? String(s).slice(0, 10) : "");
+      const year = (s) => (s ? String(s).slice(0, 4) : "");
+
+      // identity merge: dude’s night == firas
+      const aliasMap = new Map([
+        ["dude’s night", "firas"],
+        ["dude's night", "firas"],
+        ["feras", "firas"],
+        ["firas", "firas"],
+      ]);
+      const normPerson = (name) => {
+        const s = (name || "").trim();
+        const low = s.toLowerCase();
+        return aliasMap.get(low) || s;
+      };
+      const mergeParticipants = (parts) => {
+        const acc = new Map();
+        (parts || []).forEach((p) => {
+          const n = normPerson(p?.name);
+          const c = Number(p?.count || 0);
+          acc.set(n, (acc.get(n) || 0) + c);
+        });
+        return Array.from(acc.entries())
+          .map(([name, count]) => ({ name, count }))
+          .sort((a, b) => b.count - a.count);
+      };
+      data.participants = mergeParticipants(data.participants);
+      data.quotes = (data.quotes || []).map((q) => ({ ...q, from: normPerson(q.from).toLowerCase() }));
+
+      // theme toggle (auto -> dark -> light)
+      {
+        const key = "dn-theme";
+        const btn = $("#theme-toggle");
+        const apply = (t) => {
+          if (!t || t === "auto") document.documentElement.removeAttribute("data-theme");
+          else document.documentElement.setAttribute("data-theme", t);
+          btn.textContent = `theme: ${t || "auto"}`;
+        };
+        let cur = "auto";
+        try {
+          cur = localStorage.getItem(key) || "auto";
+        } catch {}
+        apply(cur);
+        btn.addEventListener("click", () => {
+          cur = cur === "auto" ? "dark" : cur === "dark" ? "light" : "auto";
+          try {
+            localStorage.setItem(key, cur);
+          } catch {}
+          apply(cur);
+        });
+      }
+
+      // trips data (precomputed from full transcript)
+      const trips = {"destinations":[{"dest":"los angeles","count":136,"kind":"local","examples":["Feras LA ты дома брачо?","Arman Feras LA ?"]},{"dest":"miami","count":100,"kind":"trip","examples":["«Я возьму обычную машину в Майами за $20. Зачем мне эти конвертабл, чего я там не видел» (с) Ферас","Выношу на обсуждение Майами с 15-18 апреля. Поставьте ✅ все кто in, что бы мы могли взять билеты и начать искать дом"]},{"dest":"glendale","count":66,"kind":"local","examples":["200 E Broadway 424 Glendale","Marketplace Parking Structure 120 Artsakh Ave, Glendale, CA 91205 (818) 550-1791 https://goo.gl/maps/n954owxspANMiQTc7"]},{"dest":"new york","count":49,"kind":"trip","examples":["Отлично, братик Клёвый город Не то что Нью Йорк","Ребят на этой неделе пропущу. С переездом и Нью Йорком вообще нет времени."]},{"dest":"mexico","count":40,"kind":"trip","examples":["Ты чувак из мексиканской мафии","Я еще сам жду теста после мексики)"]},{"dest":"alaska","count":26,"kind":"trip","examples":["Парни, поехать сейчас на Аляску в надежде увидеть северное сияние там это отчаянная идея или нет?)","Feras @kipiyozh На Аляску берём с собой Ярика, как гостя"]},{"dest":"venice","count":18,"kind":"local","examples":["Я на венисе живу","Можно на Venice fishing pier"]},{"dest":"austin","count":17,"kind":"trip","examples":["Austin, Houston","Austin ахунный город братья"]},{"dest":"colombia","count":17,"kind":"trip","examples":["Ферас, ты когда в Колумбию?","Уже норм, спасибо брачо. Хорошо тебе отдохнуть с колумбийками)"]},{"dest":"san diego","count":11,"kind":"trip","examples":["Я ещё в сан диего","В сан диего"]},{"dest":"miami beach","count":9,"kind":"trip","examples":["The Confidante Miami Beach","это в The Confidante Miami Beach брачо?"]},{"dest":"vegas","count":8,"kind":"trip","examples":["Парни, я так понял, что мы перенесли на завтра нашу встречу, но мы с Артуром завтра уезжаем в Вегас, это недавно решилось, и если честно я совсем забыл про планы на пе...","а в пятницу я в вегас"]},{"dest":"iceland","count":8,"kind":"trip","examples":["братья- Андрей переносит бизнес в Исландию, он попросил помочь с опросником","думаю организует нам что-то в Исландии в скором будущем"]},{"dest":"tulum","count":6,"kind":"trip","examples":["guys, sending you investment opportunity of a home in Tulum. I know this guy personally (the CEO), sending you a pdf about the company and the concept, and the second ...","you can rent the apt $150-400 depends on how busy it is in Tulum"]},{"dest":"montana","count":1,"kind":"trip","examples":["1426 Montana Ave, Santa Monica, CA 90403"]}],"trip_series":[{"dest":"miami","years":[{"year":2020,"count":1},{"year":2021,"count":47},{"year":2022,"count":3},{"year":2023,"count":49},{"year":2024,"count":0},{"year":2025,"count":0}]},{"dest":"new york","years":[{"year":2020,"count":8},{"year":2021,"count":8},{"year":2022,"count":12},{"year":2023,"count":18},{"year":2024,"count":1},{"year":2025,"count":2}]},{"dest":"mexico","years":[{"year":2020,"count":2},{"year":2021,"count":15},{"year":2022,"count":5},{"year":2023,"count":10},{"year":2024,"count":8},{"year":2025,"count":0}]},{"dest":"alaska","years":[{"year":2020,"count":0},{"year":2021,"count":22},{"year":2022,"count":3},{"year":2023,"count":0},{"year":2024,"count":0},{"year":2025,"count":1}]},{"dest":"austin","years":[{"year":2020,"count":5},{"year":2021,"count":3},{"year":2022,"count":9},{"year":2023,"count":0},{"year":2024,"count":0},{"year":2025,"count":0}]},{"dest":"colombia","years":[{"year":2020,"count":0},{"year":2021,"count":5},{"year":2022,"count":12},{"year":2023,"count":0},{"year":2024,"count":0},{"year":2025,"count":0}]},{"dest":"san diego","years":[{"year":2020,"count":0},{"year":2021,"count":5},{"year":2022,"count":4},{"year":2023,"count":1},{"year":2024,"count":1},{"year":2025,"count":0}]},{"dest":"miami beach","years":[{"year":2020,"count":0},{"year":2021,"count":5},{"year":2022,"count":0},{"year":2023,"count":4},{"year":2024,"count":0},{"year":2025,"count":0}]},{"dest":"vegas","years":[{"year":2020,"count":2},{"year":2021,"count":4},{"year":2022,"count":0},{"year":2023,"count":0},{"year":2024,"count":2},{"year":2025,"count":0}]},{"dest":"iceland","years":[{"year":2020,"count":0},{"year":2021,"count":0},{"year":2022,"count":7},{"year":2023,"count":1},{"year":2024,"count":0},{"year":2025,"count":0}]}],"years":[2020,2021,2022,2023,2024,2025]};
+
+      const isNewsLike = (t) => {
+        const s = (t || "").toLowerCase();
+        const pats = [
+          "рубрик",
+          "нейросет",
+          "видео",
+          "заявил",
+          "объявил",
+          "в сша",
+          "разработал",
+          "представил",
+          "презентовал",
+          "студия",
+          "проект",
+          "компания",
+          "изобр",
+          "задержали",
+          "предзаказ",
+          "премьера",
+          "фильм",
+          "фестиваль",
+        ];
+        return pats.some((p) => s.includes(p));
+      };
+
+      // top chips
+      $("#chip-range span:last-child").textContent = `${year(data.chat.start)} → ${year(data.chat.end)}`;
+      $("#chip-messages span:last-child").textContent = `${fmt(data.chat.messages)} messages`;
+      $("#chip-participants span:last-child").textContent = `${data.participants.length} участников`;
+
+      // overview stats
+      $("#stat-chat").textContent = (data.chat.name || "чат").toLowerCase();
+      $("#stat-chat-hint").textContent = `${data.chat.type} · id ${data.chat.id}`;
+      $("#stat-period").textContent = `${ymd(data.chat.start)} → ${ymd(data.chat.end)}`;
+      $("#stat-period-hint").textContent = `≈ ${year(data.chat.end) - year(data.chat.start)} лет`;
+      $("#stat-messages").textContent = fmt(data.chat.messages);
+      $("#stat-messages-hint").textContent = `+ ${fmt(data.chat.service)} service · ${fmt(data.chat.money_like_msgs)} money-like`;
+      $("#stat-polls").textContent = fmt(data.chat.polls);
+      $("#stat-polls-hint").textContent = `опросы в истории чата`;
+      $("#overview-notes").textContent = `${data.notes.topic_model}. ${data.notes.sender_chatname}.`;
+
+      // year spark
+      {
+        const el = $("#year-spark");
+        const label = $("#year-label");
+        el.innerHTML = "";
+        label.innerHTML = "";
+        const max = Math.max(...data.years.map((y) => y.count));
+        label.style.setProperty("--spark-cols", String(data.years.length));
+        data.years.forEach((y) => {
+          const col = document.createElement("div");
+          col.className = "col";
+          col.title = `${y.year}: ${fmt(y.count)}`;
+          col.innerHTML = "<i></i>";
+          el.appendChild(col);
+          const i = col.querySelector("i");
+          requestAnimationFrame(() => {
+            i.style.height = `${Math.max(6, Math.round((y.count / max) * 100))}%`;
+          });
+        });
+        label.innerHTML = data.years
+          .map((y) => `<span title="${fmt(y.count)}"><b>${y.year}</b><em>${fmt(y.count)}</em></span>`)
+          .join("");
+      }
+
+      // topic snapshot (overview)
+      const topicById = new Map(data.topics.map((t) => [t.id, t]));
+      const renderTopicCards = (targetId, withButton) => {
+        const el = $(targetId);
+        el.innerHTML = "";
+        data.topics.forEach((t) => {
+          const btnHtml = withButton
+            ? `<button class="btn" data-open-topic="${t.id}" type="button">в цитаты</button>`
+            : "";
+          const card = document.createElement("div");
+          card.className = "card expandable";
+          card.tabIndex = 0;
+          card.setAttribute("data-expandable", "1");
+          card.innerHTML = `
+            <div class="theme-title">${t.title}</div>
+            <p class="theme-desc clamp">${t.desc}</p>
+            <div class="bar" aria-hidden="true"><i style="width:0%"></i></div>
+            <div class="byline"><span>${fmt(t.count)} сообщений</span><span>${btnHtml}</span></div>
+            <div class="card-more">id: <code>${t.id}</code> · клик → развернуть/свернуть.</div>
+          `;
+          el.appendChild(card);
+          const max = Math.max(...data.topics.map((x) => x.count));
+          const w = Math.round((t.count / max) * 100);
+          requestAnimationFrame(() => (card.querySelector(".bar i").style.width = `${Math.max(6, w)}%`));
+        });
+      };
+      renderTopicCards("#topic-snapshot", true);
+      renderTopicCards("#topics-grid", true);
+
+      // trips view
+      const renderTrips = () => {
+        const showLocal = $("#toggle-trip-local")?.checked;
+        const list = (trips?.destinations || []).filter((d) => showLocal || d.kind !== "local");
+        const bars = $("#trip-bars");
+        if (!bars) return;
+        bars.innerHTML = "";
+        if (!list.length) {
+          bars.innerHTML = `<div class="muted">нет данных по поездкам</div>`;
+          return;
+        }
+        const max = Math.max(...list.map((d) => d.count));
+        list.slice(0, 14).forEach((d) => {
+          const row = document.createElement("div");
+          row.className = "barrow";
+          const tip = (d.examples || []).join(" · ");
+          row.title = tip ? `${d.dest} — ${tip}` : d.dest;
+          row.innerHTML = `
+            <div class="barname">${d.dest}</div>
+            <div class="bar"><i style="width:0%"></i></div>
+            <div class="barnum">${fmt(d.count)}</div>
+          `;
+          bars.appendChild(row);
+          const w = Math.round((d.count / max) * 100);
+          requestAnimationFrame(() => (row.querySelector(".bar i").style.width = `${Math.max(4, w)}%`));
+        });
+
+        const yrs = trips?.years || [];
+        const hint = $("#trip-years-hint");
+        if (hint && yrs.length) hint.textContent = `ось: ${yrs[0]} → ${yrs[yrs.length - 1]}`;
+
+        const seriesEl = $("#trip-series");
+        if (!seriesEl) return;
+        seriesEl.innerHTML = "";
+        const series = trips?.trip_series || [];
+        if (!series.length) return;
+        const maxCell = Math.max(...series.flatMap((s) => s.years.map((yy) => yy.count)));
+
+        // header
+        const head = document.createElement("div");
+        head.className = "barrow";
+        head.style.gridTemplateColumns = "170px 1fr 90px";
+        head.innerHTML = `<div class="muted">направление</div><div class="muted">по годам</div><div class="muted" style="text-align:right;">sum</div>`;
+        seriesEl.appendChild(head);
+
+        series.slice(0, 10).forEach((s) => {
+          const sum = s.years.reduce((a, b) => a + (b.count || 0), 0);
+          const row = document.createElement("div");
+          row.className = "barrow";
+          const cols = s.years
+            .map((yy) => {
+              const h = maxCell ? Math.round((yy.count / maxCell) * 100) : 0;
+              return `<div class="col" style="height:34px; border-radius:10px;"><i style="height:${Math.max(6, h)}%"></i></div>`;
+            })
+            .join("");
+          row.innerHTML = `
+            <div class="barname">${s.dest}</div>
+            <div class="spark" style="height:34px; gap:6px;">${cols}</div>
+            <div class="barnum">${fmt(sum)}</div>
+          `;
+          seriesEl.appendChild(row);
+        });
+      };
+      $("#toggle-trip-local")?.addEventListener("change", renderTrips);
+      renderTrips();
+
+      // participants
+      let participantsSortDesc = true;
+      const renderParticipants = () => {
+        const list = data.participants
+          .slice()
+          .sort((a, b) => (participantsSortDesc ? b.count - a.count : a.count - b.count));
+
+        const total = list.reduce((s, p) => s + p.count, 0) || 1;
+        const max = Math.max(...list.map((p) => p.count));
+        const el = $("#participants-bars");
+        el.innerHTML = "";
+        list.forEach((p) => {
+          const row = document.createElement("div");
+          row.className = "barrow";
+          const pct = (p.count / total) * 100;
+          row.innerHTML = `
+            <div class="barname">${p.name}</div>
+            <div class="bar"><i style="width:0%"></i></div>
+            <div class="barnum">${fmt(p.count)} · ${pct.toFixed(1)}%</div>
+          `;
+          el.appendChild(row);
+          const w = Math.round((p.count / max) * 100);
+          requestAnimationFrame(() => (row.querySelector(".bar i").style.width = `${Math.max(4, w)}%`));
+        });
+
+        const totalAll = data.participants.reduce((s, p) => s + p.count, 0);
+        const firas = data.participants.find((p) => p.name === "firas")?.count || 0;
+        $("#participants-notes").textContent = `всего сообщений по участникам: ${fmt(totalAll)}. firas: ${fmt(firas)} (включает dude’s night + feras).`;
+      };
+      $("#sort-participants").addEventListener("click", () => {
+        participantsSortDesc = !participantsSortDesc;
+        $("#sort-participants").textContent = participantsSortDesc ? "сорт: по убыванию" : "сорт: по возрастанию";
+        renderParticipants();
+      });
+      renderParticipants();
+
+      // heatmap data (months x participants) — precomputed from full transcript
+      const heat = {
+        participants: ["firas", "nairi akopian", "arman sarkisyan", "artur egiazaryan", "pasha yozhik", "sasha kastushkin", "tim enso"],
+        months: ["2020-05","2020-06","2020-07","2020-08","2020-09","2020-10","2020-11","2020-12","2021-01","2021-02","2021-03","2021-04","2021-05","2021-06","2021-07","2021-08","2021-09","2021-10","2021-11","2021-12","2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01"],
+        matrix: [[113,63,126,32,50,52,49],[68,114,132,68,38,48,35],[99,77,73,22,54,37,73],[66,110,143,49,57,47,80],[65,81,41,38,50,24,59],[121,202,130,57,120,82,98],[137,108,47,74,96,47,25],[194,156,93,34,107,48,57],[108,87,62,46,50,35,59],[194,146,116,58,95,86,90],[335,254,121,160,110,88,139],[430,437,163,349,78,124,108],[343,305,173,91,78,53,45],[122,111,48,62,29,41,53],[141,110,112,63,32,67,49],[116,102,41,37,23,43,1],[204,153,49,57,58,72,0],[189,151,61,96,42,70,0],[75,70,24,39,53,43,0],[244,167,69,37,45,36,0],[273,107,29,76,67,92,0],[393,199,151,77,74,108,0],[320,127,158,102,51,70,0],[232,123,90,79,51,77,0],[241,201,274,98,109,121,0],[366,183,201,104,115,58,0],[256,103,121,99,90,92,0],[249,102,145,69,57,80,0],[105,66,102,47,90,47,0],[39,46,46,40,64,40,0],[63,76,52,22,33,30,0],[82,65,42,44,44,14,0],[98,70,82,53,29,43,0],[54,55,63,70,30,40,0],[139,56,152,122,53,56,0],[126,161,328,248,58,44,0],[36,62,85,57,83,32,0],[39,106,33,41,78,12,0],[37,87,75,35,49,10,0],[61,35,66,79,26,35,0],[11,19,25,19,52,15,0],[31,11,20,23,32,9,0],[33,28,32,31,56,22,0],[23,53,40,14,21,14,0],[37,39,38,37,15,20,0],[45,41,57,30,32,8,0],[45,29,40,49,59,6,0],[113,89,79,40,60,61,0],[37,68,73,31,52,33,0],[64,43,62,20,24,36,0],[15,20,36,9,17,23,0],[60,39,24,18,38,16,0],[18,35,14,23,33,6,0],[97,85,72,60,38,34,0],[25,32,19,20,26,8,0],[14,23,25,8,19,3,0],[14,41,20,25,32,8,0],[23,42,26,17,19,0,0],[20,8,25,3,2,0,0],[11,39,14,15,7,6,0],[2,6,7,1,2,0,0],[7,13,9,8,5,10,0],[43,27,42,14,11,3,0],[42,16,31,12,22,1,0],[0,1,6,1,5,1,0],[2,1,8,13,9,0,0],[10,17,4,1,15,1,0],[6,2,5,20,12,3,0],[0,0,0,1,10,0,0]],
+      };
+
+      const renderHeatmap = () => {
+        const wrap = $("#heatmap");
+        const sel = $("#heat-year");
+        if (!wrap || !sel) return;
+
+        if (sel.options.length <= 1) {
+          const years = Array.from(new Set(heat.months.map((m) => m.slice(0, 4))));
+          years.forEach((y) => {
+            const o = document.createElement("option");
+            o.value = y;
+            o.textContent = y;
+            sel.appendChild(o);
+          });
+        }
+
+        const chosen = sel.value;
+        const idxs = heat.months
+          .map((m, i) => ({ m, i }))
+          .filter((x) => (chosen === "all" ? true : x.m.startsWith(chosen)))
+          .map((x) => x.i);
+
+        const cols = heat.participants.length + 1;
+        wrap.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+
+        wrap.innerHTML = "";
+        const mk = (txt) => {
+          const d = document.createElement("div");
+          d.className = "ym";
+          d.textContent = txt;
+          return d;
+        };
+        wrap.appendChild(mk("месяц"));
+        heat.participants.forEach((p) => wrap.appendChild(mk(p)));
+
+        let maxv = 0;
+        idxs.forEach((i) => heat.matrix[i].forEach((v) => (maxv = Math.max(maxv, v))));
+        maxv = maxv || 1;
+
+        idxs.forEach((i) => {
+          const ym0 = heat.months[i];
+          wrap.appendChild(mk(ym0));
+          heat.matrix[i].forEach((v, j) => {
+            const c = document.createElement("div");
+            c.className = "heatcell";
+            const a = Math.min(0.92, 0.08 + (v / maxv) * 0.86);
+            c.style.background = `linear-gradient(135deg, rgba(14,165,233,${a}), rgba(109,40,217,${Math.min(0.92, a + 0.08)}))`;
+            c.title = `${ym0} · ${heat.participants[j]}: ${fmt(v)}`;
+            wrap.appendChild(c);
+          });
+        });
+      };
+      $("#heat-year")?.addEventListener("change", renderHeatmap);
+      renderHeatmap();
+
+      // humor (precomputed)
+      const humor = JSON.parse(document.getElementById("humor-data").textContent.trim());
+
+      let humorSortByPer100 = true;
+      const renderHumor = () => {
+        const bars = $("#humor-bars");
+        const sel = $("#humor-person");
+        const list = (humor.leaderboard || []).slice().sort((a, b) => {
+          return humorSortByPer100 ? b.score_per_100 - a.score_per_100 : b.score - a.score;
+        });
+        if (bars) {
+          bars.innerHTML = "";
+          const max = Math.max(...list.map((x) => (humorSortByPer100 ? x.score_per_100 : x.score)));
+          list.forEach((x) => {
+            const v = humorSortByPer100 ? x.score_per_100 : x.score;
+            const row = document.createElement("div");
+            row.className = "barrow";
+            row.innerHTML = `
+              <div class="barname">${normPerson(x.name).toLowerCase()}</div>
+              <div class="bar"><i style="width:0%"></i></div>
+              <div class="barnum">${humorSortByPer100 ? `${v.toFixed(1)}/100` : fmt(v)}</div>
+            `;
+            bars.appendChild(row);
+            const w = max ? Math.round((v / max) * 100) : 0;
+            requestAnimationFrame(() => (row.querySelector(".bar i").style.width = `${Math.max(4, w)}%`));
+          });
+        }
+
+        if (sel && sel.options.length <= 1) {
+          const names = Object.keys(humor.jokes || {}).sort((a, b) => a.localeCompare(b));
+          names.forEach((n) => {
+            const o = document.createElement("option");
+            o.value = n;
+            o.textContent = normPerson(n).toLowerCase();
+            sel.appendChild(o);
+          });
+        }
+        renderHumorJokes();
+      };
+
+      const renderHumorJokes = () => {
+        const sel = $("#humor-person");
+        const box = $("#humor-jokes");
+        if (!box) return;
+        const who = sel ? sel.value : "all";
+        const pool = [];
+        const push = (name, items) => (items || []).forEach((it) => pool.push({ name, ...it }));
+        if (who === "all") {
+          Object.entries(humor.jokes || {}).forEach(([n, items]) => push(n, items));
+        } else {
+          push(who, humor.jokes?.[who] || []);
+        }
+        pool.sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")));
+
+        box.innerHTML = "";
+        if (!pool.length) {
+          box.innerHTML = `<div class="card"><div class="muted">нет шуток по фильтру</div></div>`;
+          return;
+        }
+        pool.slice(-18).reverse().forEach((x) => {
+          const wrap = document.createElement("div");
+          wrap.className = "quoteitem expandable";
+          wrap.tabIndex = 0;
+          wrap.setAttribute("data-expandable", "1");
+          wrap.innerHTML = `
+            <div class="pill"><i aria-hidden="true"></i>${normPerson(x.name).toLowerCase()}</div>
+            <p class="qtext clamp">${x.text}</p>
+            <div class="qmeta"><span>${ymd(x.date)}</span><span>юмор</span></div>
+            <div class="card-more">клик → развернуть текст.</div>
+          `;
+          box.appendChild(wrap);
+        });
+      };
+
+      $("#humor-sort")?.addEventListener("click", () => {
+        humorSortByPer100 = !humorSortByPer100;
+        $("#humor-sort").textContent = humorSortByPer100 ? "сорт: score/100" : "сорт: total score";
+        renderHumor();
+      });
+      $("#humor-person")?.addEventListener("change", renderHumorJokes);
+      $("#humor-random")?.addEventListener("click", () => {
+        const names = Object.keys(humor.jokes || {});
+        const n = names[Math.floor(Math.random() * names.length)];
+        const items = humor.jokes?.[n] || [];
+        if (!items.length) return;
+        const pick = items[Math.floor(Math.random() * items.length)];
+        setView("humor");
+        const sel = $("#humor-person");
+        if (sel) sel.value = n;
+        renderHumorJokes();
+        // scroll to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+      renderHumor();
+
+      // links/domains
+      {
+        const el = $("#domain-bars");
+        const max = Math.max(...data.domains.map((d) => d.count));
+        el.innerHTML = "";
+        data.domains.forEach((d) => {
+          const row = document.createElement("div");
+          row.className = "barrow";
+          row.innerHTML = `
+            <div class="barname">${d.domain}</div>
+            <div class="bar"><i style="width:0%"></i></div>
+            <div class="barnum">${fmt(d.count)}</div>
+          `;
+          el.appendChild(row);
+          const w = Math.round((d.count / max) * 100);
+          requestAnimationFrame(() => (row.querySelector(".bar i").style.width = `${Math.max(4, w)}%`));
+        });
+      }
+
+      // quotes explorer
+      let activeTopic = "all";
+      const renderQuoteTopics = () => {
+        const el = $("#quote-topics");
+        el.innerHTML = "";
+        const mk = (id, label) => {
+          const b = document.createElement("button");
+          b.className = "chip";
+          b.type = "button";
+          b.dataset.topic = id;
+          b.textContent = label;
+          b.style.cursor = "pointer";
+          b.style.userSelect = "none";
+          b.style.boxShadow = id === activeTopic ? "0 0 0 8px var(--ring)" : "none";
+          b.addEventListener("click", () => {
+            activeTopic = id;
+            renderQuoteTopics();
+            renderQuotes();
+          });
+          return b;
+        };
+        const allCount = data.quotes.length;
+        el.appendChild(mk("all", `все · ${fmt(allCount)}`));
+        data.topics.forEach((t) => {
+          const c = data.quotes.filter((q) => q.topic === t.id).length;
+          el.appendChild(mk(t.id, `${t.title} · ${fmt(c)}`));
+        });
+      };
+
+      const getQuoteFilters = () => {
+        const q = ($("#global-search").value || "").trim().toLowerCase();
+        const live = $("#toggle-live").checked;
+        return { q, live };
+      };
+
+      const renderQuotes = () => {
+        const { q, live } = getQuoteFilters();
+        const el = $("#quotes-list");
+        const list = data.quotes.filter((x) => {
+          if (activeTopic !== "all" && x.topic !== activeTopic) return false;
+          if (live && isNewsLike(x.text)) return false;
+          if (q) {
+            const hay = `${(x.from || "").toLowerCase()} ${(x.text || "").toLowerCase()} ${(x.date || "").toLowerCase()}`;
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+
+        const topicTitle = activeTopic === "all" ? "все" : topicById.get(activeTopic)?.title || activeTopic;
+        $("#quote-hint").textContent = `фильтр: ${topicTitle}. найдено: ${fmt(list.length)}.`;
+
+        el.innerHTML = "";
+        if (!list.length) {
+          const empty = document.createElement("div");
+          empty.className = "card";
+          empty.innerHTML = `<div class="muted">ничего не найдено. попробуй сброс или выключи “живые”.</div>`;
+          el.appendChild(empty);
+          return;
+        }
+
+        list
+          .slice()
+          .sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")))
+          .forEach((x) => {
+            const wrap = document.createElement("div");
+            wrap.className = "quoteitem expandable";
+            wrap.tabIndex = 0;
+            wrap.setAttribute("data-expandable", "1");
+            const topic = topicById.get(x.topic)?.title || x.topic;
+            wrap.innerHTML = `
+              <div class="pill"><i aria-hidden="true"></i>${topic}</div>
+              <p class="qtext clamp">${x.text}</p>
+              <div class="qmeta"><span>${(x.from || "").toLowerCase()}</span><span>${ymd(x.date)}</span></div>
+              <div class="qactions">
+                <button class="btn" type="button" data-copy="1">копировать</button>
+              </div>
+              <div class="card-more">клик → развернуть/свернуть.</div>
+            `;
+            const copyBtn = wrap.querySelector('[data-copy="1"]');
+            copyBtn.addEventListener("click", async (e) => {
+              e.stopPropagation();
+              const payload = `${x.text}\n— ${x.from} · ${ymd(x.date)}`;
+              try {
+                await navigator.clipboard.writeText(payload);
+                copyBtn.textContent = "скопировано";
+                setTimeout(() => (copyBtn.textContent = "копировать"), 900);
+              } catch {
+                copyBtn.textContent = "не смог";
+                setTimeout(() => (copyBtn.textContent = "копировать"), 900);
+              }
+            });
+            el.appendChild(wrap);
+          });
+      };
+
+      // navigation / views
+      // reading progress
+      const progressEl = $("#read-progress-i");
+      const updateProgress = () => {
+        if (!progressEl) return;
+        const doc = document.documentElement;
+        const max = Math.max(1, doc.scrollHeight - doc.clientHeight);
+        const p = Math.max(0, Math.min(1, doc.scrollTop / max));
+        progressEl.style.width = `${Math.round(p * 100)}%`;
+      };
+      document.addEventListener("scroll", () => requestAnimationFrame(updateProgress), { passive: true });
+      window.addEventListener("resize", () => requestAnimationFrame(updateProgress));
+      updateProgress();
+
+      // reveal on scroll (per active view, because inactive views are display:none)
+      const revealObserver =
+        "IntersectionObserver" in window
+          ? new IntersectionObserver(
+              (entries) => {
+                entries.forEach((en) => {
+                  if (en.isIntersecting) {
+                    en.target.classList.add("in");
+                    revealObserver.unobserve(en.target);
+                  }
+                });
+              },
+              { root: null, threshold: 0.08, rootMargin: "0px 0px -10% 0px" }
+            )
+          : null;
+
+      const armReveal = (viewId) => {
+        const view = $(`.view[data-view="${viewId}"]`);
+        if (!view) return;
+        view.querySelectorAll(".section, .hero, .grid, .subgrid, .card, .quoteitem").forEach((el) => {
+          if (!el.classList.contains("reveal")) el.classList.add("reveal");
+          if (revealObserver) revealObserver.observe(el);
+          else el.classList.add("in");
+        });
+      };
+
+      // confetti (minimal, no deps)
+      const confettiCanvas = $("#confetti");
+      const confettiCtx = confettiCanvas?.getContext?.("2d");
+      let confettiParticles = [];
+      let confettiRunning = false;
+      const fitConfetti = () => {
+        if (!confettiCanvas) return;
+        const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+        confettiCanvas.width = Math.floor(window.innerWidth * dpr);
+        confettiCanvas.height = Math.floor(window.innerHeight * dpr);
+        confettiCanvas.style.width = `${window.innerWidth}px`;
+        confettiCanvas.style.height = `${window.innerHeight}px`;
+        confettiCtx?.setTransform?.(dpr, 0, 0, dpr, 0, 0);
+      };
+      window.addEventListener("resize", fitConfetti);
+      fitConfetti();
+
+      const burstConfetti = () => {
+        if (!confettiCanvas || !confettiCtx) return;
+        fitConfetti();
+        const colors = ["#6d28d9", "#0ea5e9", "#22c55e", "#f59e0b", "#ef4444", "#e9edf7"];
+        const n = Math.floor(140 + Math.random() * 60);
+        const cx = window.innerWidth * (0.45 + Math.random() * 0.10);
+        const cy = window.innerHeight * (0.18 + Math.random() * 0.10);
+        confettiParticles = Array.from({ length: n }).map(() => {
+          const a = Math.random() * Math.PI * 2;
+          const sp = 3.8 + Math.random() * 6.2;
+          return {
+            x: cx,
+            y: cy,
+            vx: Math.cos(a) * sp,
+            vy: Math.sin(a) * sp - (3.0 + Math.random() * 2.6),
+            g: 0.16 + Math.random() * 0.10,
+            w: 6 + Math.random() * 10,
+            h: 4 + Math.random() * 8,
+            rot: Math.random() * Math.PI,
+            vr: (Math.random() - 0.5) * 0.22,
+            life: 54 + Math.floor(Math.random() * 34),
+            c: colors[Math.floor(Math.random() * colors.length)],
+          };
+        });
+        if (confettiRunning) return;
+        confettiRunning = true;
+        const tick = () => {
+          confettiCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+          confettiParticles.forEach((p) => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += p.g;
+            p.rot += p.vr;
+            p.life -= 1;
+            confettiCtx.save();
+            confettiCtx.translate(p.x, p.y);
+            confettiCtx.rotate(p.rot);
+            confettiCtx.globalAlpha = Math.max(0, Math.min(1, p.life / 80));
+            confettiCtx.fillStyle = p.c;
+            confettiCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            confettiCtx.restore();
+          });
+          confettiParticles = confettiParticles.filter((p) => p.life > 0 && p.y < window.innerHeight + 40);
+          if (confettiParticles.length) requestAnimationFrame(tick);
+          else {
+            confettiCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            confettiRunning = false;
+          }
+        };
+        requestAnimationFrame(tick);
+      };
+
+      const setView = (id) => {
+        $$(".view").forEach((v) => v.classList.toggle("active", v.dataset.view === id));
+        $$(".tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === id)));
+        armReveal(id);
+        if (id === "humor") burstConfetti();
+      };
+
+      // initial render
+      renderQuoteTopics();
+      renderQuotes();
+      armReveal("overview");
+
+      // global search
+      $("#global-search").addEventListener("input", () => {
+        setView("quotes");
+        renderQuotes();
+      });
+      $("#toggle-live").addEventListener("change", renderQuotes);
+      $("#clear-filters").addEventListener("click", () => {
+        $("#global-search").value = "";
+        $("#toggle-live").checked = true;
+        activeTopic = "all";
+        renderQuoteTopics();
+        renderQuotes();
+      });
+
+      // random quote
+      $("#random-quote").addEventListener("click", () => {
+        setView("quotes");
+        const { q, live } = getQuoteFilters();
+        const pool = data.quotes.filter((x) => {
+          if (activeTopic !== "all" && x.topic !== activeTopic) return false;
+          if (live && isNewsLike(x.text)) return false;
+          if (q) {
+            const hay = `${(x.from || "").toLowerCase()} ${(x.text || "").toLowerCase()} ${(x.date || "").toLowerCase()}`;
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+        if (!pool.length) return;
+        const pick = pool[Math.floor(Math.random() * pool.length)];
+        activeTopic = pick.topic;
+        renderQuoteTopics();
+        $("#global-search").value = (pick.from || "").toLowerCase();
+        renderQuotes();
+        $("#global-search").value = "";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      $$(".tab").forEach((b) =>
+        b.addEventListener("click", () => {
+          setView(b.dataset.view);
+        })
+      );
+
+      // expand/collapse cards
+      const toggleExpand = (el) => el?.classList?.toggle?.("expanded");
+      document.addEventListener("click", (e) => {
+        const t = e.target;
+        if (t?.closest?.("button, a, input, select, textarea, label")) return;
+        const card = t?.closest?.("[data-expandable=\"1\"]");
+        if (!card) return;
+        toggleExpand(card);
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        const card = e.target?.closest?.("[data-expandable=\"1\"]");
+        if (!card) return;
+        e.preventDefault();
+        toggleExpand(card);
+      });
+
+      // deep links: open topic -> quotes
+      document.addEventListener("click", (e) => {
+        const btn = e.target?.closest?.("[data-open-topic]");
+        if (!btn) return;
+        activeTopic = btn.getAttribute("data-open-topic");
+        setView("quotes");
+        renderQuoteTopics();
+        renderQuotes();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    </script>
+  </body>
+</html>
